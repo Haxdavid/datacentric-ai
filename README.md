@@ -22,8 +22,8 @@ This repository provides a benchmarking framework for Time Series Classification
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
-   cd <repository>
+   git clone https://github.com/Haxdavid/datacentric-ai
+   cd https://github.com/Haxdavid/datacentric-ai
    ```
 2. Install dependencies:
    ```bash
@@ -101,7 +101,7 @@ cl_dict = {CLASSIFIER_NAME: current_cl}
 Function to systemmatically intrude random label errors
 ```python
 
-from apply_dca import apply_label_erros, visualize_acc_decr, visualize_trace_M
+from apply_dca import apply_label_errors, visualize_acc_decr, visualize_trace_M
 #Apply label errors for the current DS. Define the DoE parameters (random_S, start, stop, step)
 #The returned in three objects:
 #  history_df      ---> with column structure: [step || LE_instances || LE_relative || accuracy]
