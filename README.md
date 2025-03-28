@@ -1,13 +1,13 @@
-# README.md - Time Series Classification Benchmarking and Data-Centric Optimization
+# Influence of Data Centric Optimization on Time Series Classification algorithms 
 
 ## 📌 Project Overview
-This repository provides a benchmarking framework for Time Series Classification (TSC) algorithms while incorporating data-centric optimization techniques. The project systematically introduces label errors to evaluate the impact on classification performance.
+This repository provides a framework for for applying Time Series Classification (TSC) algorithms on a huge variety of published datasets. The project systematically introduces data-centric-approaches (DCA) such as label errors to evaluate the impact on classification performance and algorithm robustness.
 
 ## 🚀 Features
 - **Benchmarking multiple TSC algorithms**
 - **Data preprocessing and visualization**
 - **Implementation of data-centric optimization techniques**
-- **Performance evaluation with label error injection**
+- **Performance evaluation/algorithm robustness while applying DCA**
 
 ---
 
@@ -17,7 +17,8 @@ This repository provides a benchmarking framework for Time Series Classification
 - Python 3.11
 - Required libraries: `numpy`, `pandas`, `matplotlib`, `sklearn`, `tslearn`, `seaborn`, `aeon`,`tensorflow`
 - Dataset: TSC archive datasets https://www.timeseriesclassification.com/dataset.php
-- Ground paper: Bake off redux: a review and experimental evaluation of recent time series classification algorithms
+- Base paper: Bake off redux: a review and experimental evaluation of recent time series classification algorithms
+- Related Thesis: https://thesis_link by David R.T. Hax
 
 ### Installation
 1. Clone the repository:
