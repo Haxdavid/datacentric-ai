@@ -2,7 +2,5 @@
 /.venv/*
 ./.venv/*
 
-simulation_results/
-
 112UCRFolds/*
 /112UCRFolds/*
