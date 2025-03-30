@@ -1,4 +1,3 @@
-# current_exp.py
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,9 +10,6 @@ from tsml_eval.publications.y2023.tsc_bakeoff.run_experiments import _set_bakeof
 
 from basic_func import dataset_provider, dataset_overview, apply_TSC_algos
 from apply_dca import apply_label_errors, visualize_acc_decr, visualize_trace_M
-
-warnings.filterwarnings("ignore", category=FutureWarning)
-warnings.filterwarnings("ignore", category=UserWarning)
 
 class CurrentExp:
     def __init__(self, dataset_name, classifier_name, reduction_factor=1, random_seed=0, test_set_ratio="default_benchmark", exp_fold="simulation_results/", save_files=True, doe_param=None):
@@ -63,7 +59,7 @@ class CurrentExp:
 
     def apply_label_errors(self, stop_percentage=0.9):
         cl_dict = {self.classifier_name: self.current_cl}
-        self.df_, self.pred_, self.trace_m_ = apply_label_errors(
+        self.df_, self.trace_m_ = apply_label_errors(
             train_test_df=self.current_ds, 
             cl_dict=cl_dict, 
             ds_=self.dataset_name, 
