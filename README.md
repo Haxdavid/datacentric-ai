@@ -30,30 +30,14 @@ This repository provides a framework for for applying Time Series Classification
    ```bash
    pip install -r requirements3.txt
    ```
-3. Run the benchmark pipeline:
-   ```python
-    from reprod_res.py
-    import run_multiple_experiments, compare_acc_
-
-    #run your own experiments
-    python benchmark_pipeline.py
-    current_classifiers = ["1NN-DTW", "GRAIL","Catch22", "FreshPRINCE","RDST", "RSF","R-STSF",
-                        "RISE", "TSF","BOSS","WEASEL","ROCKET","Arsenal","CNN", "ResNet", "MR-Hydra"]
-
-    current_dataset_names = ["Chinatown","Beef"]
-
-    run_multiple_experiments(current_classifiers=current_classifiers, current_ds_n=current_dataset_names, res_id=resample_id)
-
-    #compare own experiments and benchmark
-    comparison_ArrowHead = compare_acc_(current_clfs=current_classifiers, current_ds="ArrowHead")
-   ```
+3. Observe or Run the benchmarks and compare own results to benchmark results
+   with reprod_res.ipynb
+   
 
 ## 📂 Code Structure FOR Data-Centric-Apporaches
 
 ### 0 Run Pipeline
 Run Pipeline SINGLE CL/DS Combination
-
-import run_single_pipeline(CL, DS, RED, DCA, DoE_PARAM, EXP_FOLD, SAVE_FILES)
 
 run_single_pipeline consists of the following sub-functions which can be imported and used individually
 and consecutively:
@@ -63,17 +47,19 @@ and consecutively:
 4. visualizes the performance decrease (accuracy) and the trace_M of the current experiment
 
 ```python
-from pipeline_functions/pipeline_builders import run_single_pipeline
+from pipeline_builder import run_single_pipeline
 
 DATASET_NAME = "ElectricDevices"    #should be in DS_list
 CLASSIFIER_NAME = "MR-Hydra"        #should be in cl_ names
 REDUCTION_F = 10                    #only for large datasets
-DCA= "LabelErrors"                  #
+RANDOM_S = 0                        #Random Seed for everything except the DCA
+DCA= "LabelErrors"                  #DCA Strategy Category --> Determines DoE_PARAM DICT
 DoE_PARAM = {"random_seed":0,"start":0,"stop":10,"step":5}  #stop = max 90% of test_set_size, step=1-10 
 EXP_FOLD = "simulation_results/"                            #respect folder structure
 SAVE_FILES = True                                           #export files and figures in the respective directorys
+VIS_DATA = False                                            # Visualizes DataDistribution before applying DCA
 
-current_pipeline = run_single_pipeline(args=[])
+current_pipeline_res = run_single_pipeline(*exp_args=[])
 ```
 
 ### 1️⃣ Load Data
