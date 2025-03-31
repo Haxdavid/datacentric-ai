@@ -2,5 +2,7 @@
 /.venv/*
 ./.venv/*
 
+NoTrack/*
+
 112UCRFolds/*
 /112UCRFolds/*

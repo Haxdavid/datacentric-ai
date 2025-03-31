@@ -1,0 +1,11 @@
+step,LE_instances,LE_relative,accuracy, y_train_history, y_pred, y_pred_prob
+0,0,0.0,0.7667, [[trace_M1,trace_M2,trace_M3,...,]], y_train, y_test, y_pred, y_pred_prob
+1,1,0.0333,0.7667, [[trace_Mi,...................]], y_train changes, y_pred changes, y_pred_prob changes
+2,2,0.0666,0.7667, [y_train1, y_train2, y_train3, y_train4,...], [y_pred1, ypred2, ypred3, ...], [y_pred_probi] <-- a list of a list of an (1xn) pred array
+3,3,0.0999,0.7667, [y_train1, y_train2, y_train3, y_train4,...], y_pred, y_pred_prob 
+4,4,0.1332,0.7667
+5,5,0.1665,0.7333
+6,6,0.1998,0.6667
+7,7,0.2331,0.6667
+8,8,0.2664,0.6667
+9,9,0.2997,0.6
