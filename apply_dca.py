@@ -13,7 +13,7 @@ from basic_func import apply_TSC_algos
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
-def check_for_results(target_directory, filename_list, randomS, start, stop, step):
+def check_for_results(target_directory, filename_list,leV, randomS, start, stop, step):
     """ Check if currenct_classifer/current_dataset directory exists in current_directory
         Check if DesignOfExperiment parameter are already present
         ---> Justify equality for: RandomS;Start;Stop;Step
@@ -26,7 +26,7 @@ def check_for_results(target_directory, filename_list, randomS, start, stop, ste
     """
     historic_steps = []
     partial_matches = []
-    pattern = re.compile(rf"{randomS}_(\d+)_(\d+)_(\d+)")
+    pattern = re.compile(rf"{leV}_{randomS}_(\d+)_(\d+)_(\d+)")
     print("searching for {} in {}".format(filename_list, target_directory))
 
     # Get all existing files in the target directory
@@ -104,6 +104,7 @@ def check_for_results(target_directory, filename_list, randomS, start, stop, ste
     #CASE3 Neither Exact Match nor partial Match found
     else:
         print("results are not present with the current experiment parameters")
+        print("There is [1] no matching labelerror Version and [2] no matching randomSeed or [3] no experiment at all")
         return {"status":"no_results_present"}  #If any file with DesignOfExperiment Parameters is not already present
 
 
@@ -139,7 +140,6 @@ def ensure_json_serializable(value):
         return json.dumps([value])  # Convert single values into a list and serialize
 
 
-
 def recursive_convert_to_serializable(obj):
     """Recursively convert ndarrays to lists inside nested structures."""
     if isinstance(obj, np.ndarray):
@@ -157,27 +157,60 @@ def safe_json_dumps(obj):
     return json.dumps(recursive_convert_to_serializable(obj))
    
 
-def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", start=0, stop=10, step=1, stop_percentage=0.25, float_prec=4, exp_folder=None):
+def init_le_params(le_strategy, p_vector, train_test_df):
+    label_names = np.unique(train_test_df["y_train_small"], return_counts=False)
+    print("label_names: ", label_names) 
+    if le_strategy in ["default", "V1", "leV1"]:
+        p_vector_temp = [np.round(1/label_names.size, 4) for label in label_names]
+        p_vector_dict = {label:np.round(1/label_names.size, 4) for label in label_names }
+        print("Current Label Errors Strategy: DEFAULT: leV1")
+        print("The p_vector for the current_experiment: "+ str(p_vector_temp))
+        return "leV1", p_vector_temp, p_vector_dict
+    elif le_strategy == "V2" or le_strategy =="leV2":
+        if p_vector is None:
+            raise ValueError("p_vector is not provided. If you want to use LE strategy V2 ensure your p_vector is valid")
+        elif len(p_vector) != label_names.size:
+            raise ValueError("p_vector does not match the number of classes for the current dataset choice")
+        p_vector_dict = {label:np.round(p_value, 4) for label, p_value in zip(label_names, p_vector)}
+        print("The p_vector for the current_experiment: "+ str(p_vector_dict))
+        return "leV2", p_vector, p_vector_dict
+    
+    else:
+        raise ValueError(f"Unknown le_strategy: {le_strategy}. Please choose a valid strategy ('default', 'V1', 'leV1', 'V2', 'leV2').")
+    #TODO ADD SAFETY MECHANISM IF one p_i of one or more classes == 0 --> remaining_classes are not selectable
+
+
+def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param= {"le_strategy":"leV1","random_seed":0,"start":0,"stop":26,"step":1},
+                        exp_folder=None, p_vector=None):
     """train_test_df should be a pd.DataFrame with the columns X_train, X_test, y_train, y_test
        and their reduced identity (X_train_small). cl_dict should be a dict out of classifier names
        and their respective instances.
-       RETURNS: history_df      ---> with column structure: [step || LE_instances || LE_relative || accuracy]
-                res_            ---> pred_dict with : [acc, y_pred, y_pred_prob]
+       RETURNS: history_df      ---> with column structure:
+                                    [step || LE_instances || LE_relative || accuracy || y_train_hist || y_pred || y_pred_prob]
                 LE_trace_matrix ---> np.array (dim=2, dtype=int) with label flip history
        STORES: result files in EXP_PATH
-                1.: algorithm data,parameters,train&prediction time                         Konfigurationsfile (yaml)
-                2.: data parameters,current_dataset, current split, random_seed, etc...?                       (yaml)
+                1.: algorithm data,parameters,train&prediction time                             Konfigurationsfile (yaml)
+                2.: data parameters,current_dataset, current split, random_seed, etc...?                           (yaml)
                 3.: performance metrics acc, bal_acc, NLL, AUROC, F1Sc                      Aufbereitung (visualize(csv))
-                4: y, y_pred, y_pred_proba, ...                                             Ergebnisse (csv)   
+                4: y_train_hist, y_pred, y_pred_proba, ...                                              Results_file(csv)   
                 EXP_PATH: os.path.join(directory_current/cl_/ds_/filename_)))
                 where filename_ consists of: ds_restype_randomS_start_stop_step          
-       """
+    """
     RANDOM_S = 0
+    FLOAT_PREC=4
+    STOP_PERC=0.9
 
+    le_strategy=doe_param["le_strategy"]
+    random_seed=doe_param["random_seed"]
+    start=doe_param["start"]
+    stop=doe_param["stop"]
+    step=doe_param["step"]
+
+    le_params = init_le_params(le_strategy, p_vector, train_test_df) # returns le_string and p_vector
     cl_ = next(iter(cl_dict))                   #get the name of the cl_ instance
     dataset_name = ds_                          
     directory_current = "simulation_results/"
-    filename_ = str(RANDOM_S)+ "_" + str(start)+ "_" + str(stop)+ "_" + str(step) +".csv"
+    filename_ = le_params[0]+ "_" + str(random_seed)+ "_" + str(start)+ "_" + str(stop)+ "_" + str(step) +".csv"
     filename_res = ds_ + "_res_" + filename_
     if exp_folder is not None:
         directory_current = exp_folder
@@ -186,8 +219,8 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", start=0, stop=10, ste
     os.makedirs(EXP_PATH, exist_ok=True)
 
     #CHECK FOR RESULTS
-    existing_results= check_for_results(target_directory=EXP_PATH , filename_list=[filename_res],
-                                        randomS=RANDOM_S, start=start, stop=stop, step=step) 
+    existing_results= check_for_results(target_directory=EXP_PATH , filename_list=[filename_res], leV=le_params[0],
+                                        randomS=random_seed, start=start, stop=stop, step=step) 
     
     #C1 Results are already there (complete)
     if existing_results["status"]=="exact_match":
@@ -233,12 +266,12 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", start=0, stop=10, ste
 
     #Case-Fusion. After all Cases are handled appropriatly, execute the Main-Loop
     #START EXPERIMENT
-    np.random.seed(RANDOM_S)
+    np.random.seed(random_seed)
     error_start = start
     error_increasement = step
-    error_perc_incr = np.round(1/y_train.shape[0],float_prec)
+    error_perc_incr = np.round(1/y_train.shape[0], FLOAT_PREC)
     error_stop = stop
-    error_stop_perc = stop_percentage
+    error_stop_perc = STOP_PERC
     add_row = True
 
     history_df = history_df.astype({"step": "int64","LE_instances": "int64","LE_relative": "float64", "accuracy": "float64"})
@@ -257,37 +290,54 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", start=0, stop=10, ste
                     print(str(error_relative) +"error threshold exceeds the current limit of {0} stop at iteration {1} ".format(error_stop_perc, step_))
                     add_row=False
                     break
-                else:
-                    #Perform LABEL FLIP FUNCTION
-                    #TODO: Join the following code into a LabelFlipFunction
-                    #Perform_label_flips(y_train_old)-> y_train_new
-                    #random_label_choice1 & random_label_choice2 AND Ensure that: rlc2 =/= rlc1
-                    #implementation_question: pick randomly accross the whole indexes OR fairly between label_names ?
-                    #VARIANTE1: PICK RANDOMLY ACROSS classes. Each class has an equal chance until empty
-                    #VARIANTE2: PICK RANDOM LABELS. Each class has the chance according to their number of instances
-                    #VARIANTE3: CLASS HIERARCHY: Define the Classwise label flip order.  
-                    #VARIANTE3.1 MINORTY CLASS FIRST/MAJORITY CLASS FIRST: Special cases of the CLASS HIERARCHY Flip mechanism
+                else:   
+                    #PERFORM LABEL FLIP
+                    #VARIANTE1: PICK RANDOMLY ACROSS classes. Each class has an equal chance until empty.
+                    #VARIANTE2: CLASS HIERARCHY/HETEROGENITY: Define a p_vector with classwise probabilites of flipping UNTIL EMPTY?
+                    #VARIANTE2.1: MINORITY CLASS FIRST/MAJORITY CLASS FIRST: Special case of CLASS HIERARCHY  
+                    #VARIANTE3: PICK RANDOM LABELS. Each class has the chance according to their number of instances
                     #CURRENT CHOICE: VARIANTE1
-
-                    # source_dict = {c1: [list with indexes of instances of c1],
-                    #                c2: [list with indexes of instances of c2],
-                    #                 ...,]}
-                    # Dictionary comprehension to map each class to its instance indices
+                    #IMPLEMENTED: VARIANTE1, VARIANTE2 
                     non_empty_classes = [cls for cls in source_dict if source_dict[cls]]
                     
                     if not non_empty_classes:  # Stop early if all classes are empty
                         print("No more instances left to process.")
                         break
 
-                    selected_class = random.choice(non_empty_classes)
+                    
+                    #selected_class, le_params = try_class_selection()       ‚ 
+                    try:           
+                        selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
+
+                    ###Perform a ONE TIME clearance of empy classes when loading and continuing the exp
+                    ### if the number of classes does not match the population (randon.choices())
+                    except:
+                        empty_classes = [cls for cls in source_dict if not source_dict[cls]]
+                        for cls in empty_classes:
+                            print(f"Class {cls} is now empty and will be removed from le_params!")
+                            p_value_to_remove = le_params[2][cls]
+                            p_index_to_remove = le_params[1].index(p_value_to_remove)
+                            le_params[1].pop(p_index_to_remove)
+                        selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
+
                     remaining_labels = [label for label in label_names if label != selected_class]
                     rlc2 = np.random.choice(remaining_labels, size=1)[0]
                     removed_instance_idx = source_dict[selected_class].pop(random.randint(0, len(source_dict[selected_class]) - 1))
+                    if not source_dict[selected_class]:  
+                        print(f"Class {selected_class} is now empty and will be removed from le_params!")
+                        p_value_to_remove = le_params[2][selected_class]
+                        p_index_to_remove = le_params[1].index(p_value_to_remove)
+                        le_params[1].pop(p_index_to_remove)
+                        
+                        if sum(le_params[1]) == 0:
+                            print("WARNING There are no classes left with probability > 0.  --> stop execution!")
+                            history_df_json.to_csv(RES_PATH, index=False)
+                            break
                     y_train[removed_instance_idx] = rlc2
 
                     LE_trace_matrix[np.where(label_names == selected_class)[0][0], np.where(label_names== rlc2)[0][0]] +=1
                     error_relative += error_perc_incr
-                    error_relative = round(error_relative, float_prec)
+                    error_relative = round(error_relative, FLOAT_PREC)
                     label_names, label_counts = np.unique(y_train, return_counts=True)
                     print(f"changed label {selected_class} to {rlc2} at index {removed_instance_idx} of the data")
                 #print(each substep for error increment)           
@@ -298,9 +348,9 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", start=0, stop=10, ste
         res_ = apply_TSC_algos(train_test_dct=train_test_df, classifiers=cl_dict)
         print("current iteration: {}   current LE_step: {} error_relative: {}".format(i_, step_, error_relative))
         if add_row:
-            history_df.loc[i_] = [int(i_), int(step_), error_relative, np.round(res_[cl_]["accuracy"],float_prec),
+            history_df.loc[i_] = [int(i_), int(step_), error_relative, np.round(res_[cl_]["accuracy"],FLOAT_PREC),
                                     y_train.copy() ,res_[cl_]["y_pred"], res_[cl_]["y_pred_prob"]]
-            history_df_json.loc[i_] = [int(i_), int(step_), error_relative, np.round(res_[cl_]["accuracy"],float_prec),
+            history_df_json.loc[i_] = [int(i_), int(step_), error_relative, np.round(res_[cl_]["accuracy"],FLOAT_PREC),
                                     json.dumps(y_train.copy().tolist()),json.dumps(res_[cl_]["y_pred"].tolist()),
                                     json.dumps(res_[cl_]["y_pred_prob"].tolist())]
             # store lists as JSON instead of raw strings to improves data integrity for several storing & loading options.
@@ -310,10 +360,6 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", start=0, stop=10, ste
 
     return history_df, LE_trace_matrix
     
-
-
-
-
 
 def visualize_acc_decr(df_acc_inst_rel, w_=6, h_=4, dpi_=150, first="instances", second="relative",
                       cl_="cl_0", ds_="ds_0", filename_="acc_decr", save_fig=False, exp_folder=None):
@@ -352,7 +398,7 @@ def visualize_acc_decr(df_acc_inst_rel, w_=6, h_=4, dpi_=150, first="instances",
     #Initialize first plot
     ax1.set_ylabel('Accuracy' )
     ax1.set_xlabel(x_label)
-    ax1.set_xlim(x_.min(), x_.max()+0.05*x_.max())
+    ax1.set_xlim(x_.min(), x_.max()+0.02*x_.max())
     ax1.plot(x_ ,acc_decr, color=colors[1], label=cl_)
     ax1.tick_params(axis='y') #labelcolor=colors[0])
     ax1.grid(visible=True, linestyle='--', alpha=0.6, linewidth=0.5)
