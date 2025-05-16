@@ -8,15 +8,24 @@ import warnings
 import time
 from tsml_eval.publications.y2023.tsc_bakeoff.run_experiments import _set_bakeoff_classifier
 
-from basic_func import dataset_provider, dataset_overview, apply_TSC_algos
-from apply_dca import apply_label_errors, visualize_acc_decr, visualize_trace_M
+
+
+####mainpipeline can be executed:
+# 1. main function with config via experiment.yaml (most official way)
+# 2. with the python function pipeline builder (config in the file itself)
+# 3. as an interactive python script (notebook best for incrementellay running subparts, visualization etc.)
+
+from src.basic_func import dataset_provider,dataset_overview, overview_of_bakeoff_cl
+from src.apply_dca import apply_label_errors
+from src.visualizations import visualize_acc_decr, visualize_trace_M
+
 
 DATASET_NAME = "ElectricDevices"    #should be in DS_list
 CLASSIFIER_NAME = "MR-Hydra"        #should be in cl_ names
 REDUCTION_F = 10                    #only for large datasets
 RANDOM_S = 0                        #Random Seed for everything except the DCA
 DCA= "LabelErrors"                  #
-DoE_PARAM = {"random_seed":0,"start":0,"stop":10,"step":5}  #stop = max 90% of test_set_size, step=1-10 
+DoE_PARAM = {"le_strategy":"leV1", "p_vec":None, "random_seed":0,"start":0,"stop":10,"step":5}  #stop = max 90% of test_set_size, step=1-10 
 EXP_FOLD = "simulation_results/"                            #respect folder structure
 SAVE_FILES = True                                           #export files and figures in the respective directorys
 VIS_DATA = False                                            # Visualizes DataDistribution before applying DCA
@@ -32,7 +41,7 @@ def run_single_pipeline(ds_name, cl_name, reduction_f,random_s, dca, doe_params,
     if vis_data == True:
         x_t, y_t = dataset_overview(train_test_dct=current_ds["y_train_small"] , dataset_name=ds_name)
     else: x_t, y_t = None,None
-    
+
     current_cl = _set_bakeoff_classifier(cl_name, random_state=random_s, n_jobs=1)
     cl_dict = {cl_name: current_cl}
     df_, trace_M_= apply_label_errors(train_test_df=current_ds, cl_dict=cl_dict, ds_=ds_name, stop=doe_params["stop"],

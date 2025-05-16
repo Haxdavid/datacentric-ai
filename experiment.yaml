@@ -1,0 +1,54 @@
+EXPERIMENT:
+  - DATASET_NAME : ["ElectricDevices"]                  #should be in DS_list
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D"]                       #should be in cl_ names
+    REDUCTION_F : [10]                                  #optional. only for large datasets
+    RANDOM_S : 0
+    DCA: 
+      - type: "LabelErrors"                                #DCA Strategy Category --> Determines DoE_PARAM DICT
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":90,"step":5}
+     
+
+  - DATASET_NAME : ["ElectricDevices"]                  
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D"]                      
+    REDUCTION_F : [10]                                  
+    RANDOM_S : 0
+    DCA: 
+      - type: "LabelErrors"                                
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":1,"start":0,"stop":90,"step":5}
+     
+
+
+  - DATASET_NAME : ["Beef"]
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D"]
+    REDUCTION_F : [1]
+    RANDOM_S : 0
+    DCA:
+      - type: "LabelErrors"                               
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":90,"step":2}
+
+
+  - DATASET_NAME : ["Beef"]
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D"]
+    REDUCTION_F : [1]
+    RANDOM_S : 0
+    DCA:
+      - type: "LabelErrors"                               
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":1,"start":0,"stop":90,"step":2}
+
+
+
+  - DATASET_NAME : ["Car"]
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D"]
+    REDUCTION_F : [1]
+    RANDOM_S : 0
+    DCA:
+      - type: "LabelErrors"                               
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":90,"step":2}
+
+  - DATASET_NAME : ["Car"]
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D"]
+    REDUCTION_F : [1]
+    RANDOM_S : 0
+    DCA:
+      - type: "LabelErrors"                               
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":1,"start":0,"stop":90,"step":2}

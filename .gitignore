@@ -1,8 +1,16 @@
 .venv/*
 /.venv/*
-./.venv/*
 
 NoTrack/*
 
+src/__pycache__/*
+
 112UCRFolds/*
 /112UCRFolds/*
+
+# Ignore contents of simulation_results but keep the folder
+simulation_results/*
+!simulation_results/.gitkeep
+
+# Ignore all .xlsx files in top-level directory
+/*.xlsx
