@@ -58,7 +58,6 @@ def overview_of_bakeoff_cl(show_all_possible_names=False):
             print(cl_names_)
 
 
-
 def dataset_provider(name="FaceAll", reduction_factor=20, test_set_ratio="default_benchmark", random_state=42,
                     current_ds=CURRENT_TSC_DATASETS):
     """
@@ -149,6 +148,7 @@ def apply_TSC_algos(train_test_dct, classifiers, exclude_classifiers=[" "]):
             multiple performance metrics and y_pred,y_pred_prob arrays.
     SUPPORTS: singe OR multiple classifiers at once. Pipeline is constructed for simple classifier usage
     """
+    DEBUG = False
     pred_dict = {} #{"alg_name": {"accuracy": 0.0, "y_true": [0,0,0] "y_pred": [0,0,0], "y_pred_prob": [0,0,0]}}
     # Looping through the classifiers
     if not isinstance(classifiers, dict):
@@ -178,4 +178,6 @@ def apply_TSC_algos(train_test_dct, classifiers, exclude_classifiers=[" "]):
         acc = pred["accuracy"]
         print(f"{name:<33} {acc:.4f}")
 
+    if DEBUG:
+        return pred_dict, train_test_dct
     return pred_dict    

@@ -322,6 +322,7 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, le_param
 def missing_step_calculator(history_df, train_test_df,le_params, res_path, float_p, cl_dict, start, stop, step):
     FLOAT_PREC = float_p
     RES_PATH = res_path
+    DEBUG_TRAIN_TEST = []
     existing_steps = set(history_df["LE_instances"].tolist())
     requested_steps = set(range(start, stop + 1, step))
     missing_steps = sorted(list(requested_steps - existing_steps))  
@@ -367,6 +368,7 @@ def missing_step_calculator(history_df, train_test_df,le_params, res_path, float
 
 
         train_test_df["y_train_small"] = y_train
+        # DEBUG      DEBUG_TRAIN_TEST.append(train_test_df.copy())
         res_ = apply_TSC_algos(train_test_dct=train_test_df, classifiers=cl_dict)
         cl_ = next(iter(cl_dict)) 
         new_row = {
@@ -385,7 +387,7 @@ def missing_step_calculator(history_df, train_test_df,le_params, res_path, float
     new_df = pd.DataFrame(new_rows)
     history_df = pd.concat([history_df, new_df], ignore_index=True)
     history_df = history_df.sort_values("LE_instances").reset_index(drop=True)
-    return history_df
+    return history_df                   #, DEBUG_TRAIN_TEST
 
 
 def percentage_to_instance_converter(doe_param, train_test_df):
@@ -525,7 +527,7 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
         historic_path = existing_results["load_existing"]
         history_df = load_history_df(historic_path)
         #Initilize missing_step_processor (HUGE)
-        history_df = missing_step_calculator(history_df = history_df,
+        missing_result = missing_step_calculator(history_df = history_df,
                                             train_test_df=train_test_df,
                                             le_params=le_params,
                                             res_path=RES_PATH,
@@ -534,12 +536,18 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
                                             start=start,
                                             stop=stop,
                                             step=step)
+        #Check if DEBUG is activated
         if DEBUG == True:
-            history_df = history_df["history_df"]
-            debug_res = history_df["debug_res"]
-        LE_trace_matrix = load_trace_m(df_temp=history_df)
-        save_history_df(RES_PATH, df=history_df)
-        return history_df, LE_trace_matrix
+            history_df, debug_res = missing_result
+            LE_trace_matrix = load_trace_m(df_temp=history_df)
+            save_history_df(RES_PATH, df=history_df)
+            return history_df, debug_res
+        #Else just return history_df and LE_trace_matrix
+        else:
+            history_df = missing_result 
+            LE_trace_matrix = load_trace_m(df_temp=history_df)
+            save_history_df(RES_PATH, df=history_df)
+            return history_df, LE_trace_matrix
 
     #C3.2 Results are partialy calculated AND are to coarse |--> finer & further
     if existing_results["status"]=="load_and_fill_between_and_continue":
