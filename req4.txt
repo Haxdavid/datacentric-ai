@@ -94,7 +94,6 @@ torch==2.5.1
 tornado==6.4.1
 tqdm==4.67.1
 traitlets==5.14.3
-tsfresh==0.20.3
 tslearn==0.6.3
 tsml==0.4.0
 tsml-eval==0.4.0
