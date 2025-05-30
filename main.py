@@ -2,8 +2,10 @@ import os
 from src.utils import load_and_expand_yaml, logger, RESULTS_DIR
 from src.current_experiment import Experiment
 
+print(__name__)
+
 if __name__ == "__main__":
-    config_path = "experiment.yaml"
+    config_path = "experiment_2.yaml"
     base_path = "112UCRFolds"
 
     os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -11,6 +13,6 @@ if __name__ == "__main__":
 
     for config in configs:
         experiment = Experiment(config, base_path=base_path, results_root=RESULTS_DIR)
-        experiment.run()
+        experiment.run_experiment()
 
     logger.info("All experiments completed")
