@@ -88,7 +88,7 @@ def visualize_acc_decr(df_acc_inst_rel, w_=6, h_=4, dpi_=150, first="relative", 
 
 
 # Compute row sums
-def visualize_trace_M(trace_M, cl_="cl_0", ds_="ds_0",dpi=200, filename_="trace_M", save_fig=False, exp_folder=None):
+def visualize_trace_M(trace_M, cl_="cl_0", ds_="ds_0",dpi=200, filename_="trace_M", figsize=None, save_fig=False, exp_folder=None):
     """
     VISUALIZE trace Matrix of one SINGLE dataset/algorithm/DCA -combination.
     RECEIVE: trace_Matrix: DataFrame with the column structure: Original label, New label
@@ -96,8 +96,8 @@ def visualize_trace_M(trace_M, cl_="cl_0", ds_="ds_0",dpi=200, filename_="trace_
     STORES: IF save_fig == True: stores figure in exp_path (directory_current/cl_/ds_/filename_+"_"+paramStr)
             paramStr = randomS_+start_+stop_+step_
     """
-
-        
+    FIGSIZE_DEFAULT = (5.5, 3)  # Default figure size
+    figsize = FIGSIZE_DEFAULT if figsize is None else figsize
     colors = ['tab:blue', 'tab:orange'] #TODO
     directory_current = "simulation_results/"
     if exp_folder is not None:
@@ -108,7 +108,7 @@ def visualize_trace_M(trace_M, cl_="cl_0", ds_="ds_0",dpi=200, filename_="trace_
     row_sums = trace_M.sum(axis=1)
 
     # Create figure with GridSpec
-    fig = plt.figure(figsize=(5.5, 3), dpi=200)
+    fig = plt.figure(figsize=figsize, dpi=200)
     gs = gridspec.GridSpec(1, 2, width_ratios=[14,1], wspace=-0.4)  # Adjust width_ratios for heatmap and side plot
 
     # Create heatmap
@@ -147,7 +147,8 @@ def visualize_acc_decr_multiple(multiple_df, vis_names_, w_=6, h_=4, dpi_=150, d
     STORES: IF save_fig == True: stores figure in exp_path (directory_current/ds_+filename)
     """
     
-    COLOR_MAP = plt.get_cmap('tab10').colors
+    #COLOR_MAP = plt.get_cmap('tab10').colors
+    COLOR_MAP = [plt.get_cmap('tab10')(i) for i in range(10)]
     
     color_names = COLOR_MAP
     base_names = sorted(list(set(name.split('_rs')[0] for name in vis_names_)))

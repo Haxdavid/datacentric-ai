@@ -34,6 +34,7 @@ def check_for_results(target_directory, filename_list , leV, randomS, start, sto
     coarse_matches = []
     pattern = re.compile(rf"{leV}_{randomS}_(\d+)_(\d+)_(\d+)")
     logger.info(f"Searching inside {target_directory} for results")
+    logger.info(f"Looking for files matching pattern: {pattern.pattern} with start={start}, stop={stop}, step={step}")
     
     # List all subdirectories
     try:
@@ -291,6 +292,9 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, le_param
     ### if the number of classes does not match the population (randon.choices())
     except:
         empty_classes = [cls for cls in source_dict if not source_dict[cls]]
+        logger.warning(f"Some classes are empty: {empty_classes}")
+        logger.info(f"Current length of non empty clasces: {len(non_empty_classes)}")
+        logger.info(f"Current length of le_params: {len(le_params[1])}")
         for cls in empty_classes:
             logger.warning(f"Class {cls} is now empty and will be removed from le_params!")
             p_value_to_remove = le_params[2][cls]
@@ -313,7 +317,9 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, le_param
             return "INVALID"
 
     y_train[removed_instance_idx] = rlc2
+    print("error_rel: ", error_rel)
     error_rel += error_p_incr
+    print("error_rel after increment: ", error_rel)
     error_rel = round(error_rel, float_p)
     logger.info(f"changed label {selected_class} to {rlc2} at index {removed_instance_idx} of the data")
     return history_df, source_dict, y_train, le_params, error_rel
@@ -391,40 +397,49 @@ def missing_step_calculator(history_df, train_test_df,le_params, res_path, float
 
 
 def percentage_to_instance_converter(doe_param, train_test_df):
-    
+    """Convert percentage-based DOE parameters to instance-based parameters.
+       This function ensures that the step size is a valid integer and does not exceed the number of instances.
+       It also ensures that the stop value is less than or equal to 99% of the total instances.
+       RETURNS: doe_param with updated 'stop' and 'step' values based on the number of instances.
+    """
+    PERCENTAGE_THRESHOLD = 0.975
+
     doe_param = doe_param.copy()
     try:
         instances_no = train_test_df["y_train_small"].shape[0]
     except:
         instances_no = len(train_test_df["y_train_small"])
 
-    def next_divisible(n, d):
-        remainder = n % d
-        if remainder == 0:
-            return n
-        return int(n + (d - remainder))
-    
-    #for START = 0
+    # for start=0
     percentage_start = doe_param["start"]
     percentage_stop = doe_param["stop"]
-    percentage_step = doe_param["step"] 
+    percentage_step = doe_param["step"]
+    no_perc_steps = int(percentage_stop/percentage_step) #should be integer because 2 --> 29 should be invalid 
+    
     requested_instance_step = instances_no * percentage_step/100
-    instances_step = int(np.round(requested_instance_step))
+    instances_step = int(np.round(instances_no * percentage_step/100))
+    transformed_percentage_step = np.round(instances_step/instances_no * 100, 4)
+
+    logger.info("Converting percentage-based DOE parameters to instance-based parameters")
     logger.info(f"requested_instance_step = {requested_instance_step} will be transformed into {instances_step}")
+    logger.info(f"requested_percentage_step = {percentage_step} % || transformed into {transformed_percentage_step} %")
     if instances_step == 0:
         instances_step = 1
         logger.info("requested instances per step < 0.5 --> rounded up to 1 because its smallest possible increment")
-    if percentage_stop > 100:
-        percentage_stop = 100
-        logger.error("requested stop percentage cannot be above 100%. stop has been capped at 100%")
 
-    instances_stop = int(instances_no * percentage_stop/100)
-    instances_stop = next_divisible(instances_stop, instances_step)
-    if instances_stop > instances_no:
-        instances_stop = int(instances_stop - instances_step)
+    max_steps = int(instances_no/instances_step)  # example: 390 / 8 = 48.75 --> 48
+    while max_steps * instances_step > instances_no * PERCENTAGE_THRESHOLD:  #Ensure we do not exceed a threshold
+        max_steps -= 1
+    if not no_perc_steps <= max_steps: 
+        no_perc_steps = max_steps
+        logger.info("Converting percentage-based DOE parameters to instance-based parameters")
+        print("Cap reached")
 
+
+    instances_stop = instances_step*no_perc_steps # up until near 99% of data
     doe_param["stop"]=instances_stop
     doe_param["step"]=instances_step
+
 
     return doe_param
 
@@ -446,7 +461,7 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     """
     #CONSTANTS
     RANDOM_S = 0 
-    FLOAT_PREC=4
+    FLOAT_PREC=6
     METRICS= "metrics.json"
     Y_TRAIN_HIST= "y_train_history.npy"
     Y_PRED= "y_pred.npy"
@@ -467,7 +482,7 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     step=doe_param["step"]
     np.random.seed(random_seed)
 
-    #__init__ LE_PARAMS, CLASSIFIER, DATASET, DIRECTORY
+    #__init__ LE_PARAMS, CLASSIFIER, DATASET, DIRECTORY----
     le_params = init_le_params(le_strategy, p_vector, train_test_df) # returns le_string and p_vector
     cl_ = next(iter(cl_dict))                   #get the name of the cl_ instance
     dataset_name = ds_                          
@@ -572,6 +587,7 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     error_start = start
     error_increasement = step
     error_perc_incr = np.round(1/y_train.shape[0], FLOAT_PREC)
+    print("error_perc_incr: ", error_perc_incr)
     error_stop = stop
     add_row = True
 

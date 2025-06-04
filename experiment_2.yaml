@@ -19,7 +19,7 @@ EXPERIMENT:
 
   - DATASET_NAME : ["Adiac", "BME", "Car", "Chinatown", "Computers", "Crop", "Earthquakes", "ECG200"]                  #should be in DS_list
     CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D"]                       #should be in cl_ names
-    REDUCTION_F : [10]                                  #optional. only for large datasets
+    REDUCTION_F : [1]                                  #optional. only for large datasets
     RANDOM_S : 0
     DCA: 
       - type: "LabelErrors"                                #DCA Strategy Category --> Determines DoE_PARAM DICT
