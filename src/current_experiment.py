@@ -35,7 +35,8 @@ class Experiment:
         self.trace_m_ = None
 
 
-        self.dataset, self.meta_ = dataset_provider(name=self.dataset_name, reduction_factor=self.reduction_factor)
+        self.dataset, self.meta_ = dataset_provider(name=self.dataset_name, reduction_factor=self.reduction_factor,
+                                                    base_path=self.base_path, random_state=self.random_seed)
         self.classifier = BakeoffClassifier(self.clf_name, random_state=self.random_seed)
         logger.info(f"Initializing Exp with dataset: {self.dataset_name}, classifier: {self.clf_name}, strategy: {self.strategy}")
         logger.info(f"and configuration with DCA-type{self.strategy}, DoE_param: {self.doe_params}")

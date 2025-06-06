@@ -3,8 +3,11 @@
 
 NoTrack/*
 
+#Ignore Python cache files and cpython
 src/__pycache__/*
+*cpython*
 
+# Ignore datasets
 112UCRFolds/*
 /112UCRFolds/*
 

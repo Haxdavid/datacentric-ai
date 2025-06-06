@@ -59,7 +59,9 @@ def overview_of_bakeoff_cl(show_all_possible_names=False):
 
 
 def dataset_provider(name="FaceAll", reduction_factor=20, test_set_ratio="default_benchmark", random_state=42,
-                    current_ds=CURRENT_TSC_DATASETS):
+                    current_ds=CURRENT_TSC_DATASETS,
+                    base_path="/Users/david/Documents/Studium D&E/Applied AI/David_MA/112UCRFolds"
+                    ):
     """
     RECEIVE: dataset name to load the dataset from 112UCRFolds/...
              reduction factor to randomy reduce the data. min=1 max=?
@@ -75,13 +77,10 @@ def dataset_provider(name="FaceAll", reduction_factor=20, test_set_ratio="defaul
  
     # Differentiate between benchmark split & manual split  
     if test_set_ratio == "default_benchmark":
-        X_train, y_train, meta_ = load_classification(name=name, split="train" , return_metadata=True,
-                                  extract_path="/Users/david/Documents/Studium D&E/Applied AI/David_MA/112UCRFolds") 
-        X_test, y_test = load_classification(name=name, split="test", return_metadata=False,
-                                  extract_path="/Users/david/Documents/Studium D&E/Applied AI/David_MA/112UCRFolds")
+        X_train, y_train, meta_ = load_classification(name=name, split="train" , return_metadata=True, extract_path=base_path) 
+        X_test, y_test = load_classification(name=name, split="test", return_metadata=False, extract_path=base_path)
     else:
-        X_, y_, meta_ = load_classification(name=name, return_metadata=True,
-                                  extract_path="/Users/david/Documents/Studium D&E/Applied AI/David_MA/112UCRFolds") 
+        X_, y_, meta_ = load_classification(name=name, return_metadata=True, extract_path=base_path) 
         X_train, X_test, y_train, y_test = train_test_split(X_, y_, test_size=test_set_ratio, random_state=random_state)
 
 
