@@ -1,0 +1,116 @@
+[
+    {
+        "step": 0,
+        "LE_instances": 0,
+        "LE_relative": 0.0,
+        "accuracy": 0.826087
+    },
+    {
+        "step": 1,
+        "LE_instances": 20,
+        "LE_relative": 0.05128,
+        "accuracy": 0.797954
+    },
+    {
+        "step": 2,
+        "LE_instances": 40,
+        "LE_relative": 0.10256,
+        "accuracy": 0.777494
+    },
+    {
+        "step": 3,
+        "LE_instances": 60,
+        "LE_relative": 0.15384,
+        "accuracy": 0.746803
+    },
+    {
+        "step": 4,
+        "LE_instances": 80,
+        "LE_relative": 0.20512,
+        "accuracy": 0.754476
+    },
+    {
+        "step": 5,
+        "LE_instances": 100,
+        "LE_relative": 0.2564,
+        "accuracy": 0.731458
+    },
+    {
+        "step": 6,
+        "LE_instances": 120,
+        "LE_relative": 0.30768,
+        "accuracy": 0.700767
+    },
+    {
+        "step": 7,
+        "LE_instances": 140,
+        "LE_relative": 0.35896,
+        "accuracy": 0.657289
+    },
+    {
+        "step": 8,
+        "LE_instances": 160,
+        "LE_relative": 0.41024,
+        "accuracy": 0.580563
+    },
+    {
+        "step": 9,
+        "LE_instances": 180,
+        "LE_relative": 0.46152,
+        "accuracy": 0.560102
+    },
+    {
+        "step": 10,
+        "LE_instances": 200,
+        "LE_relative": 0.5128,
+        "accuracy": 0.498721
+    },
+    {
+        "step": 11,
+        "LE_instances": 220,
+        "LE_relative": 0.56408,
+        "accuracy": 0.439898
+    },
+    {
+        "step": 12,
+        "LE_instances": 240,
+        "LE_relative": 0.61536,
+        "accuracy": 0.419437
+    },
+    {
+        "step": 13,
+        "LE_instances": 260,
+        "LE_relative": 0.66664,
+        "accuracy": 0.358056
+    },
+    {
+        "step": 14,
+        "LE_instances": 280,
+        "LE_relative": 0.71792,
+        "accuracy": 0.30179
+    },
+    {
+        "step": 15,
+        "LE_instances": 300,
+        "LE_relative": 0.7692,
+        "accuracy": 0.276215
+    },
+    {
+        "step": 16,
+        "LE_instances": 320,
+        "LE_relative": 0.82048,
+        "accuracy": 0.222506
+    },
+    {
+        "step": 17,
+        "LE_instances": 340,
+        "LE_relative": 0.87176,
+        "accuracy": 0.153453
+    },
+    {
+        "step": 18,
+        "LE_instances": 360,
+        "LE_relative": 0.92304,
+        "accuracy": 0.097187
+    }
+]
