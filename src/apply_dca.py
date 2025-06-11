@@ -6,7 +6,7 @@ import pandas as pd
 import json
 import logging
 
-from src.basic_func import apply_TSC_algos
+from basic_func import apply_TSC_algos
 from src.utils import setup_logger
 from src.classifierWrapper import BakeoffClassifier
 
@@ -166,6 +166,13 @@ def save_history_df(RES_PATH, df):
         json.dump(metrics_records, f, indent=4)
 
     # Save array-like columns as .npy
+    #DEBUG
+    print("last two rows:")
+    print(df["y_pred_prob"].iloc[-2])
+    print(df["y_pred_prob"].iloc[-1])
+    print(type(df["y_pred_prob"].iloc[-1])) 
+    print("\n\n whole columns:")
+    print(df["y_pred_prob"])
     df["y_train_history"] = df["y_train_history"].apply(lambda x: [int(i) for i in x])
     df["y_pred"] = df["y_pred"].apply(lambda x: [int(i) for i in x])
     np.save(os.path.join(RES_PATH, "y_train_history.npy"), df["y_train_history"].tolist())
@@ -272,7 +279,7 @@ def init_le_params(le_strategy, p_vector, train_test_df):
     #TODO ADD SAFETY MECHANISM IF one p_i of one or more classes == 0 --> remaining_classes are not selectable
 
 
-def perform_label_flips(history_df, source_dict, y_train, label_names_, le_params, res_path, float_p, error_rel, error_p_incr):  
+def perform_label_flips(history_df, source_dict, y_train, label_names_, label_counts_, le_params, res_path, float_p, error_rel, error_p_incr):  
     #VARIANTE1: PICK RANDOMLY ACROSS classes. Each class has an equal chance until empty.
     #VARIANTE2: CLASS HIERARCHY/HETEROGENITY: Define a p_vector with classwise probabilites of flipping UNTIL EMPTY?
     #VARIANTE2.1: MINORITY CLASS FIRST/MAJORITY CLASS FIRST: Special case of CLASS HIERARCHY  
@@ -280,6 +287,9 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, le_param
     #CURRENT CHOICE: VARIANTE1
     #IMPLEMENTED: VARIANTE1, VARIANTE2 
     non_empty_classes = [cls for cls in source_dict if source_dict[cls]]
+    class_count_one = (label_counts_ == 1)
+    class_count_one_dict = dict(zip(label_names_, class_count_one))
+
     #logger.info(f"Current Source dict: {source_dict}")
     if not non_empty_classes:  # Stop early if all classes are empty
         logger.error("No more instances left to process.......return INVALID")
@@ -287,7 +297,12 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, le_param
     
     try:           
         selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
-
+        if class_count_one_dict[selected_class] == True:
+            logger.warning(f"Class {selected_class} has only one instance left. It will not be considered for the current label_flip_mechanism!")
+            while class_count_one_dict[selected_class] == True:
+                logger.info("Trying another approach to select a non-one-instance-left class")
+                selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
+                
     ###Perform a ONE TIME clearance of empy classes when loading and continuing the exp
     ### if the number of classes does not match the population (randon.choices())
     except:
@@ -301,6 +316,11 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, le_param
             p_index_to_remove = le_params[1].index(p_value_to_remove)
             le_params[1].pop(p_index_to_remove)
         selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
+        if class_count_one_dict[selected_class] == True:
+            logger.warning(f"Class {selected_class} has only one instance left. It will not be considered for the current label_flip_mechanism!")
+            while class_count_one_dict[selected_class] == True:
+                logger.info("Trying another approach to select a non-one-instance-left class")
+                selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
 
     remaining_labels = [label for label in label_names_ if label != selected_class]
     rlc2 = np.random.choice(remaining_labels, size=1)[0]
@@ -344,7 +364,7 @@ def missing_step_calculator(history_df, train_test_df,le_params, res_path, float
     for step_ in missing_steps: #step_ = 3
         prev_step = max([s for s in existing_steps if s <= step_], default=0)
         y_train = np.array(step_to_y_train[prev_step]) #prev y_train [1,1,1,1,1,2,2,2,2] y_train_ahead [2,2,2,1,1,2,2,2,2]
-        label_names,_ = np.unique(y_train, return_counts=True)
+        label_names,label_counts = np.unique(y_train, return_counts=True)
         print("y_train:  ", y_train)
         print("y_train_initial:  ", y_train_initial)
         print("label_names:   ", label_names)
@@ -360,6 +380,7 @@ def missing_step_calculator(history_df, train_test_df,le_params, res_path, float
                                 source_dict=source_dict,
                                 y_train=y_train,
                                 label_names_ = label_names,
+                                label_counts_= label_counts,
                                 le_params=le_params,
                                 res_path=RES_PATH,
                                 float_p=FLOAT_PREC,
@@ -601,6 +622,7 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
                             source_dict=source_dict,
                             y_train=y_train,
                             label_names_ = label_names,
+                            label_counts_= label_counts,
                             le_params=le_params,
                             res_path=RES_PATH,
                             float_p=FLOAT_PREC,
