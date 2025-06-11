@@ -6,7 +6,7 @@ import pandas as pd
 import json
 import logging
 
-from basic_func import apply_TSC_algos
+from src.basic_func import apply_TSC_algos
 from src.utils import setup_logger
 from src.classifierWrapper import BakeoffClassifier
 
@@ -166,13 +166,6 @@ def save_history_df(RES_PATH, df):
         json.dump(metrics_records, f, indent=4)
 
     # Save array-like columns as .npy
-    #DEBUG
-    print("last two rows:")
-    print(df["y_pred_prob"].iloc[-2])
-    print(df["y_pred_prob"].iloc[-1])
-    print(type(df["y_pred_prob"].iloc[-1])) 
-    print("\n\n whole columns:")
-    print(df["y_pred_prob"])
     df["y_train_history"] = df["y_train_history"].apply(lambda x: [int(i) for i in x])
     df["y_pred"] = df["y_pred"].apply(lambda x: [int(i) for i in x])
     np.save(os.path.join(RES_PATH, "y_train_history.npy"), df["y_train_history"].tolist())
