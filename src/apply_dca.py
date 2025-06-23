@@ -292,9 +292,12 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, label_co
         selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
         if class_count_one_dict[selected_class] == True:
             logger.warning(f"Class {selected_class} has only one instance left. It will not be considered for the current label_flip_mechanism!")
-            while class_count_one_dict[selected_class] == True:
-                logger.info("Trying another approach to select a non-one-instance-left class")
-                selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
+            if error_rel >= 0.88:
+                logger.warning(f"Error relative is already high: {error_rel}. Flipping class: {selected_class} which has only one instance left is now valid")
+            else: 
+                while class_count_one_dict[selected_class] == True:
+                    logger.info("Trying another approach to select a non-one-instance-left class")
+                    selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
                 
     ###Perform a ONE TIME clearance of empy classes when loading and continuing the exp
     ### if the number of classes does not match the population (randon.choices())
@@ -330,9 +333,7 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, label_co
             return "INVALID"
 
     y_train[removed_instance_idx] = rlc2
-    print("error_rel: ", error_rel)
     error_rel += error_p_incr
-    print("error_rel after increment: ", error_rel)
     error_rel = round(error_rel, float_p)
     logger.info(f"changed label {selected_class} to {rlc2} at index {removed_instance_idx} of the data")
     return history_df, source_dict, y_train, le_params, error_rel

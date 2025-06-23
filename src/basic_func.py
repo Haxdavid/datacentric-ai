@@ -102,7 +102,7 @@ def dataset_provider(name="FaceAll", reduction_factor=20, test_set_ratio="defaul
     train_test_dct = {"X_train": X_train, "y_train": y_train, "X_test": X_test, "y_test": y_test,
                         "X_train_small": X_train_small,"y_train_small": y_train_small, "X_test_small": X_test_small,"y_test_small": y_test_small }
     for name, array in train_test_dct.items():
-        print(f"{name:<20}: {array.shape}")
+        logger.info(f"{name:<20}: {array.shape}")
 
     return train_test_dct, meta_
 
@@ -156,7 +156,7 @@ def apply_TSC_algos(train_test_dct, classifiers, exclude_classifiers=[" "]):
     for name, clf in classifiers.items():
         if name not in exclude_classifiers:
             start_time = time.time()
-            print(f"\n\nClassifier: {type(clf).__name__}")
+            logger.info(f"\n\nClassifier: {type(clf).__name__}")
             clf.fit(train_test_dct["X_train_small"],train_test_dct["y_train_small"])
             train_time = time.time() - start_time
             y_pred = clf.predict(train_test_dct["X_test_small"])
@@ -172,10 +172,10 @@ def apply_TSC_algos(train_test_dct, classifiers, exclude_classifiers=[" "]):
         else:
             pass
         
-    print("\n" + f'{"Algorithm":<34}{"Accuracy"}')   
+    logger.info("\n" + f'{"Algorithm":<34}{"Accuracy"}')   
     for name, pred in pred_dict.items():
         acc = pred["accuracy"]
-        print(f"{name:<33} {acc:.4f}")
+        logger.info(f"{name:<33} {acc:.4f}")
 
     if DEBUG:
         return pred_dict, train_test_dct
