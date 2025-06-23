@@ -72,12 +72,16 @@ def get_frames_and_names(exp_dict):
     """
     dataframes_ = []
     clf_names_ = []
+    ds_names_ = []
     clf_names_with_seeds = []
     for exp_ in exp_dict.keys(): 
         dataframes_.append(exp_dict[exp_][1].df_)
+        ds_names_.append(exp_dict[exp_][1].dataset_name)
         clf_names_.append(exp_dict[exp_][1].clf_name)
         clf_name_seed_ = exp_dict[exp_][1].clf_name + "_rs"+ str(exp_dict[exp_][0]["DCA"]["DoE_param"]["random_seed"])
         clf_names_with_seeds.append(clf_name_seed_)
 
 
-    return dataframes_, clf_names_, clf_names_with_seeds
+    return dataframes_, clf_names_, ds_names_,  clf_names_with_seeds
+
+
