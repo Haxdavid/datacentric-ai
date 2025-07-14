@@ -151,7 +151,35 @@ def check_for_results(target_directory, filename_list , leV, randomS, start, sto
         return {"status":"no_results_present"}  #If any file with DesignOfExperiment Parameters is not already present
 
 
+
 def save_history_df(RES_PATH, df):
+    """
+    Save the structured experiment results:
+    - metrics.json: stores step, LE_instances, LE_relative, accuracy
+    - y_train_history.npy, y_pred.npy, y_pred_prob.npy: store corresponding array-like results
+    """
+    os.makedirs(RES_PATH, exist_ok=True)
+    logger.info("HISTORIC_SAVING_USED!")
+
+    # Save metrics (as list of dicts for easier loading)
+    metrics_cols = ["step", "LE_instances", "LE_relative", "accuracy"]
+    if "train_time" in df.columns and "eval_time" in df.columns:
+        metrics_cols += ["train_time", "eval_time"]
+    metrics_records = df[metrics_cols].to_dict(orient="records")
+    with open(os.path.join(RES_PATH, "metrics.json"), "w") as f:
+        json.dump(metrics_records, f, indent=4)
+
+
+    df["y_train_history"] = df["y_train_history"].apply(lambda x: [int(i) for i in x])
+    df["y_pred"] = df["y_pred"].apply(lambda x: [int(i) for i in x])
+    np.save(os.path.join(RES_PATH, "y_train_history.npy"), df["y_train_history"].tolist())
+    np.save(os.path.join(RES_PATH, "y_pred.npy"), df["y_pred"].tolist())
+    np.save(os.path.join(RES_PATH, "y_pred_prob.npy"), df["y_pred_prob"].tolist())
+
+    print(f"✅ Results saved in: {RES_PATH}")
+
+
+def save_history_df_compressed(RES_PATH, df):
     """
     Save the structured experiment results:
     - metrics.json: stores step, LE_instances, LE_relative, accuracy
@@ -161,18 +189,72 @@ def save_history_df(RES_PATH, df):
 
     # Save metrics (as list of dicts for easier loading)
     metrics_cols = ["step", "LE_instances", "LE_relative", "accuracy"]
+    if "train_time" in df.columns and "eval_time" in df.columns:
+        metrics_cols += ["train_time", "eval_time"]
     metrics_records = df[metrics_cols].to_dict(orient="records")
     with open(os.path.join(RES_PATH, "metrics.json"), "w") as f:
         json.dump(metrics_records, f, indent=4)
 
-    # Save array-like columns as .npy
+
     df["y_train_history"] = df["y_train_history"].apply(lambda x: [int(i) for i in x])
     df["y_pred"] = df["y_pred"].apply(lambda x: [int(i) for i in x])
-    np.save(os.path.join(RES_PATH, "y_train_history.npy"), df["y_train_history"].tolist())
-    np.save(os.path.join(RES_PATH, "y_pred.npy"), df["y_pred"].tolist())
-    np.save(os.path.join(RES_PATH, "y_pred_prob.npy"), df["y_pred_prob"].tolist())
 
-    print(f"✅ Results saved in: {RES_PATH}")
+    # Save array-like columns as .npz
+    y_pred_prob_array = np.array(df["y_pred_prob"].tolist(), dtype=np.float16)
+    y_train_array = np.array(df["y_train_history"].tolist(), dtype=np.uint8)  # or uint16 if needed
+    y_pred_array = np.array(df["y_pred"].tolist(), dtype=np.uint8) #uint8 up to 256 classes
+
+    np.savez_compressed(os.path.join(RES_PATH, "y_train_history.npz"), y_train=y_train_array)
+    np.savez_compressed(os.path.join(RES_PATH, "y_pred.npz"), y_pred=y_pred_array)
+    np.savez_compressed(os.path.join(RES_PATH, "y_pred_prob.npz"), y_pred_prob=y_pred_prob_array)
+
+    logger.info(f"✅ Results saved in: {RES_PATH}")
+
+
+def load_history_df_safely(load_path):
+    # Load metrics
+    with open(os.path.join(load_path, "metrics.json"), "r") as f:
+        metrics = json.load(f)
+    df = pd.DataFrame(metrics)
+
+    # --- y_train_history ---
+    y_train_path_npz = os.path.join(load_path, "y_train_history.npz")
+    y_train_path_npy = os.path.join(load_path, "y_train_history.npy")
+    if os.path.exists(y_train_path_npz):
+        y_train_array = np.load(y_train_path_npz)["y_train"]
+    elif os.path.exists(y_train_path_npy):
+        y_train_array = np.load(y_train_path_npy, allow_pickle=True)
+    else:
+        raise FileNotFoundError("y_train_history file not found")
+
+
+    # --- y_pred ---
+    y_pred_path_npz = os.path.join(load_path, "y_pred.npz")
+    y_pred_path_npy = os.path.join(load_path, "y_pred.npy")
+    if os.path.exists(y_pred_path_npz):
+        y_pred_array = np.load(y_pred_path_npz)["y_pred"]
+    elif os.path.exists(y_pred_path_npy):
+        y_pred_array = np.load(y_pred_path_npy, allow_pickle=True)
+    else:
+        raise FileNotFoundError("y_pred file not found")
+
+
+    # --- y_pred_prob ---
+    y_prob_path_npz = os.path.join(load_path, "y_pred_prob.npz")
+    y_prob_path_npy = os.path.join(load_path, "y_pred_prob.npy")
+    if os.path.exists(y_prob_path_npz):
+        y_pred_prob_array = np.load(y_prob_path_npz)["y_pred_prob"]
+    elif os.path.exists(y_prob_path_npy):
+        y_pred_prob_array = np.load(y_prob_path_npy, allow_pickle=True)
+    else:
+        raise FileNotFoundError("y_pred_prob file not found")
+    
+    df["y_train_history"] = [np.array(x, dtype=str) for x in y_train_array]
+    df["y_pred"] = [np.array(x, dtype=str) for x in y_pred_array]
+    df["y_pred_prob"] = list(y_pred_prob_array)
+
+    logger.info(f"✅ Results loaded from: {load_path}")
+    return df
 
 
 def load_history_df(load_path):
@@ -329,7 +411,7 @@ def perform_label_flips(history_df, source_dict, y_train, label_names_, label_co
         
         if sum(le_params[1]) == 0:
             logger.error("ERROR WARNING There are no classes left with probability > 0.  --> stop execution!")
-            save_history_df(res_path, df=history_df)
+            save_history_df_compressed(res_path, df=history_df)
             return "INVALID"
 
     y_train[removed_instance_idx] = rlc2
@@ -417,7 +499,8 @@ def percentage_to_instance_converter(doe_param, train_test_df):
        It also ensures that the stop value is less than or equal to 99% of the total instances.
        RETURNS: doe_param with updated 'stop' and 'step' values based on the number of instances.
     """
-    PERCENTAGE_THRESHOLD = 0.975
+    UPPER_THRESHOLD = 0.975
+    LOWER_THRESHOLD = doe_param["stop"] * 1/100  #Assuming this is 0.90
 
     doe_param = doe_param.copy()
     try:
@@ -443,8 +526,14 @@ def percentage_to_instance_converter(doe_param, train_test_df):
         logger.info("requested instances per step < 0.5 --> rounded up to 1 because its smallest possible increment")
 
     max_steps = int(instances_no/instances_step)  # example: 390 / 8 = 48.75 --> 48
-    while max_steps * instances_step > instances_no * PERCENTAGE_THRESHOLD:  #Ensure we do not exceed a threshold
+
+    while no_perc_steps * instances_step < instances_no * LOWER_THRESHOLD:  #Ensure we do not fall below a threshold
+        no_perc_steps += 1
+        logger.info(f"requested_number_of_percentage_steps = {no_perc_steps -1} was increased by one")
+    while max_steps * instances_step > instances_no * UPPER_THRESHOLD:  #Ensure we do not exceed a threshold
         max_steps -= 1
+
+    # Ensure that the number of percentage steps does not exceed the maximum allowed steps
     if not no_perc_steps <= max_steps: 
         no_perc_steps = max_steps
         logger.info("Converting percentage-based DOE parameters to instance-based parameters")
@@ -454,7 +543,6 @@ def percentage_to_instance_converter(doe_param, train_test_df):
     instances_stop = instances_step*no_perc_steps # up until near 99% of data
     doe_param["stop"]=instances_stop
     doe_param["step"]=instances_step
-
 
     return doe_param
 
@@ -482,6 +570,8 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     Y_PRED= "y_pred.npy"
     Y_PRED_PROB="y_pred_prob.npy"
     PARAM_MODE="percentage"
+    HIST_DF_COLS= ["step", "LE_instances", "LE_relative", "accuracy", "train_time", "eval_time",
+                   "y_train_history", "y_pred","y_pred_prob"]
     DEBUG = False
 
     #DOE_PARAMS
@@ -515,14 +605,14 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     
     #C1 Results are already there (complete)
     if existing_results["status"]=="exact_match":
-        history_df = load_history_df(RES_PATH)
+        history_df = load_history_df_safely(RES_PATH)
         LE_trace_matrix = load_trace_m(df_temp=history_df)
         return history_df, LE_trace_matrix
     
     #C1.1 Results are already FURTHER calculated then requested and have to be trimmed
     if existing_results["status"]=="load_and_trim":
         historic_path = existing_results["load_existing"]
-        history_df = load_history_df(historic_path)
+        history_df = load_history_df_safely(historic_path)
         trimmed_df = history_df[history_df["LE_instances"] <= stop]
         LE_trace_matrix = load_trace_m(df_temp=trimmed_df)
         return trimmed_df, LE_trace_matrix
@@ -530,20 +620,15 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     #C2 Results are partialy calculated and have to be loaded and continued
     if existing_results["status"]=="load_and_continue":
         historic_path = existing_results["load_existing"]
-        history_df = load_history_df(historic_path)
+        history_df = load_history_df_safely(historic_path)
         latest_stop = existing_results["latest_stop"]
         trimmed_df = history_df[history_df["LE_instances"] <= latest_stop]  ###NEWLINE with TRIMMING
         logger.info("Trimmed history_df to the latest stop: %s", latest_stop)
         history_df = trimmed_df                 #OVERWRITE history df to ensure correct continuation
-        print("HISTORY_DF")
-        print(history_df.iloc[-1,:])
         y_train = np.array(trimmed_df["y_train_history"].iloc[-1])
         train_test_df["y_train_small"]=y_train #traing_test_df points on the correct object
         y_train_initial=np.array(trimmed_df["y_train_history"][0])
-        print("y_train")
-        print(y_train)
-        print("y_train_initial")
-        print(y_train_initial)
+  
 
         label_names, label_counts = np.unique(y_train_initial, return_counts=True) 
         source_dict = {cls: np.where((y_train == cls) & (y_train_initial == cls))[0].tolist() for cls in label_names}
@@ -555,7 +640,7 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     #C3.1 Results are fully calculated BUT are to coarse |--> finer
     if existing_results["status"]=="load_and_trim_and_fill_between":
         historic_path = existing_results["load_existing"]
-        history_df = load_history_df(historic_path)
+        history_df = load_history_df_safely(historic_path)
         #Initilize missing_step_processor (HUGE)
         missing_result = missing_step_calculator(history_df = history_df,
                                             train_test_df=train_test_df,
@@ -570,25 +655,25 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
         if DEBUG == True:
             history_df, debug_res = missing_result
             LE_trace_matrix = load_trace_m(df_temp=history_df)
-            save_history_df(RES_PATH, df=history_df)
+            save_history_df_compressed(RES_PATH, df=history_df)
             return history_df, debug_res
         #Else just return history_df and LE_trace_matrix
         else:
             history_df = missing_result 
             LE_trace_matrix = load_trace_m(df_temp=history_df)
-            save_history_df(RES_PATH, df=history_df)
+            save_history_df_compressed(RES_PATH, df=history_df)
             return history_df, LE_trace_matrix
 
     #C3.2 Results are partialy calculated AND are to coarse |--> finer & further
     if existing_results["status"]=="load_and_fill_between_and_continue":
         existing_results["status"]="no_results_present" 
-        logger.info("Handled CASE3 appropriately but SKIPPED IN_BETWEEN_CALCULATING")
+        logger.warning("Handled CASE3 appropriately but SKIPPED IN_BETWEEN_CALCULATING")
 
     #C4 No results present. Start experiment from scratch
     if existing_results["status"] =="no_results_present":
         y_train, y_test = train_test_df["y_train_small"], train_test_df["y_test_small"]  #---> UNNECESSARY Y TEST
         #Initialize resulting DataFrame
-        history_df = pd.DataFrame(columns=["step", "LE_instances", "LE_relative", "accuracy", "y_train_history", "y_pred","y_pred_prob"])
+        history_df = pd.DataFrame(columns= HIST_DF_COLS)
         error_relative = 0
         #Initialize all present label names & their respective number, Initialize Trace Matrix for label tracing
         #Provide subscriptable Source_dict to ensure correct non-duplicate label flipping
@@ -597,12 +682,11 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
         source_dict = {cls: np.where(y_train == cls)[0].tolist() for cls in label_names}
 
 
-    #Case-Fusion. FOR ALL cases in which there are no results no far enough results execute the Main-Loop 
+    #Case-Fusion. FOR ALL cases in which there are no results or no far enough results execute the Main-Loop 
     #START EXPERIMENT
     error_start = start
     error_increasement = step
     error_perc_incr = np.round(1/y_train.shape[0], FLOAT_PREC)
-    print("error_perc_incr: ", error_perc_incr)
     error_stop = stop
     add_row = True
 
@@ -637,13 +721,14 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
         logger.info(f"current iteration: {i_}   current LE_step: {step_} error_relative: {error_relative}")
         if add_row:
             history_df.loc[i_] = [int(i_), int(step_), error_relative, np.round(res_[cl_]["accuracy"],FLOAT_PREC),
-                                    y_train.copy() ,res_[cl_]["y_pred"], res_[cl_]["y_pred_prob"]]
+                                  res_[cl_]["train_time"], res_[cl_]["eval_time"],
+                                y_train.copy() ,res_[cl_]["y_pred"], res_[cl_]["y_pred_prob"]]
             # store lists as JSON instead of raw strings to improves data integrity for several storing & loading options.
             # res should be stored in /David_MA/dca/label_er/<current_cl>/<current_ds>/results.csv # maybe add conf_matrices. delta?
     history_df = history_df.astype({"step": "int32","LE_instances": "int32","LE_relative": "float64", "accuracy": "float64"})
     
     history_df_to_store = history_df.copy()
-    save_history_df(RES_PATH, df=history_df_to_store)
+    save_history_df_compressed(RES_PATH, df=history_df_to_store)
     
 
     return history_df, LE_trace_matrix

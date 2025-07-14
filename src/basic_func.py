@@ -169,10 +169,18 @@ def apply_TSC_algos(train_test_dct, classifiers, exclude_classifiers=[" "]):
             #print("---------------------------- "+ f"Train time={train_time:.2f}s, Eval Time={eval_time:.2f}s")
             logger.info("------------------------"+ f"Train time={train_time:.2f}s, Eval Time={eval_time:.2f}s")
             pred_dict[name] = {"accuracy":acc_score,"y_train":train_test_dct["y_train_small"], "y_pred":y_pred,"y_pred_prob":y_pred_prob}
+            pred_dict[name] = {
+                "accuracy": acc_score,
+                "y_train": train_test_dct["y_train_small"],
+                "y_pred": y_pred,
+                "y_pred_prob": y_pred_prob,
+                "train_time": round(float(np.float32(train_time)),4),
+                "eval_time": round(float(np.float32(eval_time)),4)
+            }        
         else:
             pass
         
-    logger.info("\n" + f'{"Algorithm":<34}{"Accuracy"}')   
+    logger.info(f'{"Algorithm":<34}{"Accuracy"}')   
     for name, pred in pred_dict.items():
         acc = pred["accuracy"]
         logger.info(f"{name:<33} {acc:.4f}")

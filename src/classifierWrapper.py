@@ -2,17 +2,29 @@ from tsml_eval.publications.y2023.tsc_bakeoff.set_bakeoff_classifier import (
     _set_bakeoff_classifier,
 )
 from src.utils import logger
+import os
+import multiprocessing
+
+
+def get_n_jobs(max_local_cores=4):
+    # Check if we're on a SLURM cluster
+    if "SLURM_CPUS_PER_TASK" in os.environ:
+        return int(os.environ["SLURM_CPUS_PER_TASK"])
+    else:
+        # Local execution: don't overload machine
+        return min(max_local_cores, multiprocessing.cpu_count())
+
 
 ### Classifier Wrapper ###
 class BakeoffClassifier:
     def __init__(self, name: str, random_state: int = 0):
         self.name = name
         self.random_state = random_state
-        logger.info(
-            f"Initializing BakeoffClassifier with name: {self.name}, random_state: {self.random_state}"
-        )
+        self.num_jobs = get_n_jobs(max_local_cores=6)
+        logger.info(f"Initializing BakeoffClassifier with name: {self.name}, random_state: {self.random_state}")
+        logger.info(f"Using {self.num_jobs} jobs for classifier training and prediction")
         self.model = _set_bakeoff_classifier(
-            name, random_state=self.random_state, n_jobs=1
+            name, random_state=self.random_state, n_jobs=self.num_jobs
         )
 
     def __name__(self):
