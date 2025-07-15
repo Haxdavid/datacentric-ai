@@ -1,12 +1,21 @@
 from tsml_eval.publications.y2023.tsc_bakeoff.set_bakeoff_classifier import (
     _set_bakeoff_classifier,
 )
+from tsml_eval.utils.experiments import assign_gpu
 from src.utils import logger
 import os
 import multiprocessing
 
+def assign_GPU():
+    if os.environ.get("CUDA_VISIBLE_DEVICES") is None:
+        try:
+            gpu_id = assign_gpu(set_environ=True)
+            logger.info(f"Assigned GPU {gpu_id}")
+        except Exception as e:
+            logger.warning(f"Could not assign GPU: {e}")
 
-def get_n_jobs(max_local_cores=4):
+
+def get_n_jobs(max_local_cores=6):
     # Check if we're on a SLURM cluster
     if "SLURM_CPUS_PER_TASK" in os.environ:
         return int(os.environ["SLURM_CPUS_PER_TASK"])
