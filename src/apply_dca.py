@@ -216,6 +216,9 @@ def load_history_df_safely(load_path):
     with open(os.path.join(load_path, "metrics.json"), "r") as f:
         metrics = json.load(f)
     df = pd.DataFrame(metrics)
+    if "train_time" not in df.columns:
+        df["train_time"] = np.nan
+        df["eval_time"] = np.nan
 
     # --- y_train_history ---
     y_train_path_npz = os.path.join(load_path, "y_train_history.npz")
