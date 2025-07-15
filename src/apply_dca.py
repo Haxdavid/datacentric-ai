@@ -8,7 +8,7 @@ import logging
 
 from src.basic_func import apply_TSC_algos
 from src.utils import setup_logger
-from src.classifierWrapper import BakeoffClassifier
+from src.classifierWrapper import BakeoffClassifier, assign_GPU
 
 
 logger = setup_logger("Apply_DCA_Logger") # Use module-specific logger
@@ -216,6 +216,9 @@ def load_history_df_safely(load_path):
     with open(os.path.join(load_path, "metrics.json"), "r") as f:
         metrics = json.load(f)
     df = pd.DataFrame(metrics)
+    if "train_time" not in df.columns:
+        df["train_time"] = np.nan
+        df["eval_time"] = np.nan
 
     # --- y_train_history ---
     y_train_path_npz = os.path.join(load_path, "y_train_history.npz")
@@ -573,12 +576,15 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     HIST_DF_COLS= ["step", "LE_instances", "LE_relative", "accuracy", "train_time", "eval_time",
                    "y_train_history", "y_pred","y_pred_prob"]
     DEBUG = False
+    GPU_USAGE = True
 
     #DOE_PARAMS
     if doe_param is None:
         doe_param = {"le_strategy":"leV1","p_vec":None, "random_seed":0,"start":0,"stop":26,"step":1}
     if PARAM_MODE == "percentage":
         doe_param = percentage_to_instance_converter(doe_param, train_test_df)
+    if GPU_USAGE == True:
+        assign_GPU()
     le_strategy=doe_param["le_strategy"]
     p_vector=doe_param["p_vec"]
     random_seed=doe_param["random_seed"]
