@@ -156,7 +156,8 @@ def apply_TSC_algos(train_test_dct, classifiers, exclude_classifiers=[" "]):
     for name, clf in classifiers.items():
         if name not in exclude_classifiers:
             start_time = time.time()
-            logger.info(f"\n\nClassifier: {type(clf).__name__}")
+            #Representation of the classifier
+            clf.__repr__()
             clf.fit(train_test_dct["X_train_small"],train_test_dct["y_train_small"])
             train_time = time.time() - start_time
             y_pred = clf.predict(train_test_dct["X_test_small"])

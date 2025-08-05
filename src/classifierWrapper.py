@@ -38,6 +38,10 @@ class BakeoffClassifier:
 
     def __name__(self):
         return type(self.model).__name__
+    
+    def __repr__(self):
+        logger.info(f"Building Classifier: BakeoffClassifier with name: {self.name}")
+        return f"BakeoffClassifier(name='{self.name}')"
 
     def fit(self, X, y):
         #logger.info(f"Fitting classifier: {self.name}")
