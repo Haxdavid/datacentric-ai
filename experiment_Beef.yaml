@@ -1,8 +1,0 @@
-EXPERIMENT:  
-  - DATASET_NAME : ["Beef"]                  #should be in DS_list
-    CLASSIFIER_NAME : ["1NN-DTW", "GRAIL", "Catch22", "STC", "RDST", "R-STSF", "TSF", "BOSS", "ROCKET","CNN", "LITETime", "HC1"]                       #should be in cl_ names
-    REDUCTION_F : [1]                                  #optional. only for large datasets
-    RANDOM_S : 0
-    DCA: 
-      - type: "LabelErrors"                                #DCA Strategy Category --> Determines DoE_PARAM DICT
-        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":5}
