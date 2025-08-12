@@ -31,3 +31,7 @@ test_script.sh*
 
 # Ignore all .xlsx files in top-level directory
 /*.xlsx
+
+# Ignore all visualization heavy notebooks
+visualize_results.ipynb
+classifier_comparison.ipynb
