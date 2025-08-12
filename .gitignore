@@ -28,6 +28,11 @@ simulation_results/**/*.png
 job_script*
 job_scripts/*
 test_script.sh*
+test_cpu.sh
 
 # Ignore all .xlsx files in top-level directory
 /*.xlsx
+
+# Ignore keras files
+/*.keras
+/*.out
