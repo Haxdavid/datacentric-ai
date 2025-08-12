@@ -14,7 +14,7 @@ from src.le_func import reconstruct_state_y_train, check_for_le_trajectory, full
 
 
 logger = setup_logger("Apply_DCA_Logger") # Use module-specific logger
-logger.info("Custom-named logger active.")
+logger.info("apply_dca.py logger active")
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
@@ -294,7 +294,7 @@ def load_results_json(RES_PATH):
 
 
 def load_trace_m(df_temp):
-    y_train_initial=np.array(df_temp["y_train_history"][0])
+    y_train_initial=np.array(df_temp["y_train_history"].iloc[0])
     y_train_last=np.array(df_temp["y_train_history"].iloc[-1])
     label_names = np.unique(y_train_initial, return_counts=False) 
     LE_trace_matrix = np.zeros((label_names.shape[0],label_names.shape[0]))
@@ -790,7 +790,6 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
                                             float_prec=FLOAT_PREC,
                                             hist_df_column_validation=HIST_DF_COLS)
 
-        label_names, label_counts = np.unique(y_train_initial, return_counts=True)
         LE_trace_matrix = load_trace_m(df_temp=history_df)
         save_history_df_compressed(RES_PATH, df=history_df)
         return history_df, LE_trace_matrix

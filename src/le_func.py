@@ -120,7 +120,13 @@ def check_for_le_trajectory(le_trajectory_dir: str,
     #full_path = os.path.join(le_trajectory_dir, dataset, leV) #already receiving full path
     full_path = le_trajectory_dir
     os.makedirs(full_path, exist_ok=True)
-    file_path = os.path.join(full_path, f"{dataset}_le_traj.parquet")
+    if random_seed == 0:
+        filename = f"{dataset}_le_traj.parquet"
+    else:
+        filename = f"{dataset}_le_traj{random_seed}.parquet"
+
+    file_path = os.path.join(full_path, filename)
+
 
      # Check if file exists
     if os.path.exists(file_path):
