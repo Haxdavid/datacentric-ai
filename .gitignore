@@ -8,13 +8,21 @@ NoTrack/*
 src/__pycache__/*
 *cpython*
 
+#Ignore nested_df for visualizations
+nested_df*
+nested_super_df*
+
 # Ignore datasets
 112UCRFolds/*
 /112UCRFolds/*
 
 # Ignore contents of simulation_results but keep the folder
 #simulation_results/*
-!simulation_results/.gitkeep
+#!simulation_results/.gitkeep
+
+#Ignore just several contents of simulation_results
+simulation_results/*.csv
+simulation_results/**/*.png
 
 # Ignore all job_scripts
 job_script*
