@@ -1,0 +1,90 @@
+[
+    {
+        "step": 1,
+        "LE_instances": 0,
+        "LE_relative": 0.0,
+        "accuracy": 0.833333,
+        "train_time": 0.7217,
+        "eval_time": 0.3561
+    },
+    {
+        "step": 2,
+        "LE_instances": 3,
+        "LE_relative": 0.1,
+        "accuracy": 0.766667,
+        "train_time": 0.179,
+        "eval_time": 0.2829
+    },
+    {
+        "step": 3,
+        "LE_instances": 6,
+        "LE_relative": 0.19999999999999998,
+        "accuracy": 0.633333,
+        "train_time": 0.1693,
+        "eval_time": 0.3208
+    },
+    {
+        "step": 4,
+        "LE_instances": 9,
+        "LE_relative": 0.3,
+        "accuracy": 0.533333,
+        "train_time": 0.0826,
+        "eval_time": 0.3594
+    },
+    {
+        "step": 5,
+        "LE_instances": 12,
+        "LE_relative": 0.39999999999999997,
+        "accuracy": 0.466667,
+        "train_time": 0.231,
+        "eval_time": 0.2442
+    },
+    {
+        "step": 6,
+        "LE_instances": 15,
+        "LE_relative": 0.49999999999999994,
+        "accuracy": 0.4,
+        "train_time": 0.1703,
+        "eval_time": 0.2545
+    },
+    {
+        "step": 7,
+        "LE_instances": 18,
+        "LE_relative": 0.6,
+        "accuracy": 0.3,
+        "train_time": 0.0871,
+        "eval_time": 0.3124
+    },
+    {
+        "step": 8,
+        "LE_instances": 21,
+        "LE_relative": 0.7,
+        "accuracy": 0.266667,
+        "train_time": 0.2313,
+        "eval_time": 0.2483
+    },
+    {
+        "step": 9,
+        "LE_instances": 24,
+        "LE_relative": 0.7999999999999999,
+        "accuracy": 0.133333,
+        "train_time": 0.1769,
+        "eval_time": 0.2495
+    },
+    {
+        "step": 10,
+        "LE_instances": 27,
+        "LE_relative": 0.8999999999999999,
+        "accuracy": 0.1,
+        "train_time": 0.2041,
+        "eval_time": 0.3519
+    },
+    {
+        "step": 11,
+        "LE_instances": 30,
+        "LE_relative": 0.9999999999999999,
+        "accuracy": 0.033333,
+        "train_time": 0.1746,
+        "eval_time": 0.4173
+    }
+]
