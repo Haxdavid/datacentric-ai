@@ -78,7 +78,8 @@ def early_degradation_point(df_ : pd.DataFrame) -> float:
     early_degradation = df_[df_['accuracy'] < acc_degradation_relative]
     if early_degradation.empty:
         print("No early degradation point found.")
-        raise ValueError("No early degradation point found: accuracy never dropped below threshold.")
+        print("No early degradation point found: accuracy never dropped below threshold.")
+        return np.nan
 
     ed_point = early_degradation['LE_relative'].iloc[0]
     #print(f"Early Degradation Point: {ed_point:.5f}")

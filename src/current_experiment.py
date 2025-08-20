@@ -1,5 +1,6 @@
 import os
 import json
+import platform
 import numpy as np
 import pandas as pd
 from typing import Any, Dict
@@ -12,6 +13,10 @@ from src.basic_func import dataset_provider,dataset_overview, overview_of_bakeof
 from src.apply_dca import apply_label_errors
 from src.classifierWrapper import BakeoffClassifier
 from src.visualizations import visualize_acc_decr, visualize_trace_M
+
+# Check System and Platform for some experiments
+system = platform.system()
+machine = platform.machine()
 
 class Experiment:
     def __init__(self, config: Dict[str, Any], base_path: str, results_root: str):
@@ -37,9 +42,14 @@ class Experiment:
 
         self.dataset, self.meta_ = dataset_provider(name=self.dataset_name, reduction_factor=self.reduction_factor,
                                                     base_path=self.base_path, random_state=self.random_seed)
-        self.classifier = BakeoffClassifier(self.clf_name, random_state=self.random_seed)
-        logger.info(f"Initializing Exp with dataset: {self.dataset_name}, classifier: {self.clf_name}, strategy: {self.strategy}")
-        logger.info(f"and configuration with DCA-type: {self.strategy}, DoE_param: {self.doe_params}")
+        
+        if self.clf_name == "MRSQM" and system == "Darwin" and machine == "arm64":
+            logger.warning("MRSQM was skipped LOCALLY because of wrong architecture (QUANT is PLACEHOLDER)")
+            self.classifier = BakeoffClassifier("Quant", random_state=self.random_seed)
+        else:
+            self.classifier = BakeoffClassifier(self.clf_name, random_state=self.random_seed)
+            logger.info(f"Initializing Exp with dataset: {self.dataset_name}, classifier: {self.clf_name}, strategy: {self.strategy}")
+            logger.info(f"and configuration with DCA-type: {self.strategy}, DoE_param: {self.doe_params}")
 
 
     def dataset_overview(self) -> None:

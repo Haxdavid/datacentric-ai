@@ -11,6 +11,7 @@ src/__pycache__/*
 #Ignore nested_df for visualizations
 nested_df*
 nested_super_df*
+df_*
 
 # Ignore datasets
 112UCRFolds/*
@@ -36,6 +37,8 @@ test_cpu.sh
 # Ignore all visualization heavy notebooks
 visualize_results.ipynb
 classifier_comparison.ipynb
+apply_dca_temp_playground.ipynb
+
 # Ignore keras files
 /*.keras
 /*.out
