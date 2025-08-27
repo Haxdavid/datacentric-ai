@@ -260,38 +260,6 @@ def load_history_df_safely(load_path, le_trajectory, initial_y_train):
     logger.info(f"✅ Results loaded from: {load_path}")
     return df
 
-###historic
-def load_history_df(load_path):
-    with open(os.path.join(load_path, "metrics.json"), "r") as f:
-        metrics = json.load(f)
-
-    y_train_history = np.load(os.path.join(load_path, "y_train_history.npy"), allow_pickle=True)
-    y_pred = np.load(os.path.join(load_path, "y_pred.npy"), allow_pickle=True)
-    y_pred_prob = np.load(os.path.join(load_path, "y_pred_prob.npy"), allow_pickle=True)
-
-    # Reconstruct DataFrame
-    df = pd.DataFrame(metrics)
-    # df["y_train_history"] = list(y_train_history)
-    # df["y_pred"] = list(y_pred)
-    # df["y_pred_prob"] = list(y_pred_prob)
-
-    # df["y_train_history"] = df["y_train_history"].apply(lambda x: [str(i) for i in x])
-    # df["y_pred"] = df["y_pred"].apply(lambda x: [str(i) for i in x])
-
-    df["y_train_history"] = [np.array(x, dtype=str) for x in y_train_history]
-    df["y_pred"] = [np.array(x, dtype=str) for x in y_pred]
-    df["y_pred_prob"] = list(y_pred_prob)  # unchanged
-
-    return df    
-
-###historic
-def load_results_json(RES_PATH):
-    df = pd.read_csv(RES_PATH)
-    df["y_train_history"] = df["y_train_history"].apply(json.loads)  # ✅ Convert back to list
-    df["y_pred"] = df["y_pred"].apply(json.loads)
-    df["y_pred_prob"] = df["y_pred_prob"].apply(json.loads)
-    return df
-
 
 def load_trace_m(df_temp):
     y_train_initial=np.array(df_temp["y_train_history"].iloc[0])
@@ -305,35 +273,6 @@ def load_trace_m(df_temp):
 
     return LE_trace_matrix
 
-###historic
-def ensure_json_serializable(value):
-    """Convert numpy arrays or lists to JSON strings if necessary."""
-    if isinstance(value, str):  # Already a JSON string, return as is
-        return value
-    elif isinstance(value, np.ndarray):  # Convert numpy array to list, then serialize
-        return json.dumps(value.tolist())
-    elif isinstance(value, list):  # Convert list to JSON if it's not already
-        return json.dumps(value)
-    else:
-        return json.dumps([value])  # Convert single values into a list and serialize
-
-###historic
-def recursive_convert_to_serializable(obj):
-    """Recursively convert ndarrays to lists inside nested structures."""
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-    elif isinstance(obj, list):
-        return [recursive_convert_to_serializable(item) for item in obj]
-    elif isinstance(obj, dict):
-        return {key: recursive_convert_to_serializable(value) for key, value in obj.items()}
-    else:
-        return obj  # base case: keep the object as is if it's not list/dict/array
-
-###historic
-def safe_json_dumps(obj):
-    """Convert to JSON-safe object and dump as JSON string."""
-    return json.dumps(recursive_convert_to_serializable(obj))
-   
 
 def init_le_params(le_strategy, p_vector, train_test_df):
     label_names = np.unique(train_test_df["y_train_small"], return_counts=False)
@@ -380,73 +319,6 @@ def perform_label_flip(flip_trajectory, le_instance, y_train,  error_rel, error_
     logger.info(f"changed label {old_label} to {new_label} at index {flip_index} of the data")
 
     return y_train, error_rel
-
-
-def perform_label_flips_historic(history_df, source_dict, y_train, label_names_, label_counts_, le_params, res_path, float_p, error_rel, error_p_incr):  
-    #VARIANTE1: PICK RANDOMLY ACROSS classes. Each class has an equal chance until empty.
-    #VARIANTE2: CLASS HIERARCHY/HETEROGENITY: Define a p_vector with classwise probabilites of flipping UNTIL EMPTY?
-    #VARIANTE2.1: MINORITY CLASS FIRST/MAJORITY CLASS FIRST: Special case of CLASS HIERARCHY  
-    #VARIANTE3: PICK RANDOM LABELS. Each class has the chance according to their number of instances
-    #CURRENT CHOICE: VARIANTE1
-    #IMPLEMENTED: VARIANTE1, VARIANTE2 
-    non_empty_classes = [cls for cls in source_dict if source_dict[cls]]
-    class_count_one = (label_counts_ == 1)
-    class_count_one_dict = dict(zip(label_names_, class_count_one))
-
-    #logger.info(f"Current Source dict: {source_dict}")
-    if not non_empty_classes:  # Stop early if all classes are empty
-        logger.error("No more instances left to process.......return INVALID")
-        return "INVALID"
-    
-    try:           
-        selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
-        if class_count_one_dict[selected_class] == True:
-            logger.warning(f"Class {selected_class} has only one instance left. It will not be considered for the current label_flip_mechanism!")
-            if error_rel >= 0.88:
-                logger.warning(f"Error relative is already high: {error_rel}. Flipping class: {selected_class} which has only one instance left is now valid")
-            else: 
-                while class_count_one_dict[selected_class] == True:
-                    logger.info("Trying another approach to select a non-one-instance-left class")
-                    selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
-                
-    ###Perform a ONE TIME clearance of empy classes when loading and continuing the exp
-    ### if the number of classes does not match the population (randon.choices())
-    except:
-        empty_classes = [cls for cls in source_dict if not source_dict[cls]]
-        logger.warning(f"Some classes are empty: {empty_classes}")
-        logger.info(f"Current length of non empty clasces: {len(non_empty_classes)}")
-        logger.info(f"Current length of le_params: {len(le_params[1])}")
-        for cls in empty_classes:
-            logger.warning(f"Class {cls} is now empty and will be removed from le_params!")
-            p_value_to_remove = le_params[2][cls]
-            p_index_to_remove = le_params[1].index(p_value_to_remove)
-            le_params[1].pop(p_index_to_remove)
-        selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
-        if class_count_one_dict[selected_class] == True:
-            logger.warning(f"Class {selected_class} has only one instance left. It will not be considered for the current label_flip_mechanism!")
-            while class_count_one_dict[selected_class] == True:
-                logger.info("Trying another approach to select a non-one-instance-left class")
-                selected_class = random.choices(non_empty_classes, weights=le_params[1], k=1)[0]
-
-    remaining_labels = [label for label in label_names_ if label != selected_class]
-    rlc2 = np.random.choice(remaining_labels, size=1)[0]
-    removed_instance_idx = source_dict[selected_class].pop(random.randint(0, len(source_dict[selected_class]) - 1))
-    if not source_dict[selected_class]:  
-        logger.warning(f"Class {selected_class} is now empty and will be removed from le_params!")
-        p_value_to_remove = le_params[2][selected_class]
-        p_index_to_remove = le_params[1].index(p_value_to_remove)
-        le_params[1].pop(p_index_to_remove)
-        
-        if sum(le_params[1]) == 0:
-            logger.error("ERROR WARNING There are no classes left with probability > 0.  --> stop execution!")
-            save_history_df_compressed(res_path, df=history_df)
-            return "INVALID"
-
-    y_train[removed_instance_idx] = rlc2
-    error_rel += error_p_incr
-    error_rel = round(error_rel, float_p)
-    logger.info(f"changed label {selected_class} to {rlc2} at index {removed_instance_idx} of the data")
-    return history_df, source_dict, y_train, le_params, error_rel
 
 
 
@@ -523,79 +395,6 @@ def missing_step_calculator(
 
     history_df = history_df.astype({"step": "int32","LE_instances": "int32","LE_relative": "float64", "accuracy": "float64"})
     return history_df
-
-
-
-def missing_step_calculator_historic(history_df, train_test_df,le_params, res_path, float_p, cl_dict, start, stop, step):
-    FLOAT_PREC = float_p
-    RES_PATH = res_path
-    DEBUG_TRAIN_TEST = []
-    existing_steps = set(history_df["LE_instances"].tolist())
-    requested_steps = set(range(start, stop + 1, step))
-    missing_steps = sorted(list(requested_steps - existing_steps))  
-    logger.info(f"Missing steps to compute: {missing_steps}")
-
-    new_rows = []
-    all_y_trains = list(history_df["y_train_history"])
-    step_to_y_train = dict(zip(history_df["LE_instances"], all_y_trains))
-    y_train_initial = np.array(all_y_trains[0])
-    error_perc_incr = np.round(1/len(y_train_initial), FLOAT_PREC)
-
-    # Iterate over all missing steps
-    for step_ in missing_steps: #step_ = 3
-        prev_step = max([s for s in existing_steps if s <= step_], default=0)
-        y_train = np.array(step_to_y_train[prev_step]) #prev y_train [1,1,1,1,1,2,2,2,2] y_train_ahead [2,2,2,1,1,2,2,2,2]
-        label_names,label_counts = np.unique(y_train, return_counts=True)
-        print("y_train:  ", y_train)
-        print("y_train_initial:  ", y_train_initial)
-        print("label_names:   ", label_names)
-    
-        source_dict = {cls: np.where((y_train == cls) & (y_train_initial == cls))[0].tolist() for cls in label_names}
-        error_relative = np.round(1/y_train.shape[0] * step_ , FLOAT_PREC)
-
-        # Apply exactly the number of flips needed to go from prev_step to step_
-        flips_needed = step_ - prev_step   #eg   prev_step=1, step_=2, flips_needed=1
-        for _ in range(flips_needed):
-        # Perform label flip — reuse your flip logic here
-            label_flip_res = perform_label_flips_historic(history_df = history_df,
-                                source_dict=source_dict,
-                                y_train=y_train,
-                                label_names_ = label_names,
-                                label_counts_= label_counts,
-                                le_params=le_params,
-                                res_path=RES_PATH,
-                                float_p=FLOAT_PREC,
-                                error_rel=error_relative,
-                                error_p_incr=error_perc_incr)
-            if label_flip_res == "INVALID":
-                break
-            else:
-                existing_steps.add(step_)
-                history_df, source_dict, y_train, le_params, error_relative = label_flip_res
-                step_to_y_train[step_]=y_train
-
-
-        train_test_df["y_train_small"] = y_train
-        # DEBUG      DEBUG_TRAIN_TEST.append(train_test_df.copy())
-        res_ = apply_TSC_algos(train_test_dct=train_test_df, classifiers=cl_dict)
-        cl_ = next(iter(cl_dict)) 
-        new_row = {
-        "step": int(len(history_df) + len(new_rows)),
-        "LE_instances": step_,
-        "LE_relative": round(step_ / len(y_train), FLOAT_PREC),
-        "accuracy": np.round(res_[cl_]["accuracy"], FLOAT_PREC),
-        "y_train_history": y_train.copy(),
-        "y_pred": res_[cl_]["y_pred"],
-        "y_pred_prob": res_[cl_]["y_pred_prob"]
-        }
-        new_rows.append(new_row)
-        logger.info("current iteration: {}   current LE_step: {} error_relative: {}".format(len(new_rows), step_, error_relative))
-
-    # Merge old and new dataframes
-    new_df = pd.DataFrame(new_rows)
-    history_df = pd.concat([history_df, new_df], ignore_index=True)
-    history_df = history_df.sort_values("LE_instances").reset_index(drop=True)
-    return history_df                   #, DEBUG_TRAIN_TEST
 
 
 def percentage_to_instance_converter(doe_param, train_test_df):
@@ -694,6 +493,8 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
                    "y_train_history", "y_pred","y_pred_prob"]
     DEBUG = False
     GPU_USAGE = True
+    CHECKPOINT_THRESHOLD = 0.5 #relative stop
+    DELETE_CHECKPOINTS = True
 
     #DOE_PARAMS
     if doe_param is None:
@@ -716,7 +517,9 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     #__init__ LE_PARAMS, CLASSIFIER, DATASET, DIRECTORY----
     le_params = init_le_params(le_strategy, p_vector, train_test_df) # returns le_string and p_vector
     cl_ = next(iter(cl_dict))                   #get the name of the cl_ instance
-    dataset_name = ds_                          
+    dataset_name = ds_ 
+    checkpoint_thres_stop = stop * CHECKPOINT_THRESHOLD    
+    checkpoint_saved = False                     
     directory_extension = le_params[0]+ "_" + str(random_seed)+ "_" + str(start)+ "_" + str(stop)+ "_" + str(step)
     if exp_folder is not None:
         RESULT_DIRECTORY = exp_folder    
@@ -877,10 +680,28 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     
         logger.info(f"Iteration finished succesfully \n")
 
+        #--- CHECKPOINTING LOGIC ---
+        if checkpoint_saved == False and step_ >= checkpoint_thres_stop:
+            directory_extension_cp = le_params[0]+ "_" + str(random_seed)+ "_" + str(start)+ "_" + str(step_)+ "_" + str(step)
+            RES_PATH_CP = os.path.join(EXP_PATH, directory_extension_cp)
+            history_df_cp = history_df.copy()
+            history_df_cp = history_df_cp.astype({"step": "int32","LE_instances": "int32","LE_relative": "float64", "accuracy": "float64"})
+            history_df_cp = history_df_cp.sort_values(by="LE_instances")
+            save_history_df_compressed(RES_PATH_CP, df=history_df_cp)
+            checkpoint_saved = True
+
     history_df = history_df.astype({"step": "int32","LE_instances": "int32","LE_relative": "float64", "accuracy": "float64"})
     history_df = history_df.sort_values(by="LE_instances")#.reset_index(drop=True)
     history_df_to_store = history_df.copy()
     save_history_df_compressed(RES_PATH, df=history_df_to_store)
+
+    #remove checkpoint results if experiment was finished succesfully
+    #if existing_results["status"]=="load_and_continue" and DELETE_CHECKPOINTS:
+    if DELETE_CHECKPOINTS and checkpoint_saved:
+        import shutil
+        shutil.rmtree(RES_PATH_CP, ignore_errors=True)
+        logger.info(f"🗑️ Removed checkpoint folder {RES_PATH_CP} after successful completion.")
+        
     
 
     return history_df, LE_trace_matrix
