@@ -1,5 +1,5 @@
 EXPERIMENT:  
-  - DATASET_NAME : ["Adiac", "BME", "Car", "Chinatown", "Computers", "Crop", "Earthquakes", "ECG200","ACSF1", "BeetleFly", "CBF", "Coffee", "DiatomSizeReduction", "BirdChicken", "ArrowHead", "ChlorineConcentration","Beef", "CinCECGTorso", "CricketX", "CricketY", "CricketZ", "DistalPhalanxOutlineAgeGroup", "ECG5000", "ECGFiveDays","ElectricDevices", "EOGHorizontalSignal","EOGVerticalSignal", "EthanolLevel", "FaceAll", "FaceFour", "FacesUCR"]                 
+  - DATASET_NAME : ["Adiac", "BME", "Car", "Chinatown", "Computers", "Earthquakes", "ECG200","ACSF1", "BeetleFly", "CBF", "Coffee", "DiatomSizeReduction", "BirdChicken", "ArrowHead", "ChlorineConcentration","Beef", "CinCECGTorso", "CricketX", "CricketY", "CricketZ", "DistalPhalanxOutlineAgeGroup", "ECG5000", "ECGFiveDays","ElectricDevices", "EOGHorizontalSignal","EOGVerticalSignal", "EthanolLevel", "FaceAll", "FaceFour", "FacesUCR"]                 
     CLASSIFIER_NAME : ["1NN-DTW"]                       
     REDUCTION_F : [1]                                  
     RANDOM_S : 0
