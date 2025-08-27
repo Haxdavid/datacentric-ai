@@ -1,0 +1,90 @@
+[
+    {
+        "step": 1,
+        "LE_instances": 0,
+        "LE_relative": 0.0,
+        "accuracy": 0.9,
+        "train_time": 44.7451,
+        "eval_time": 73.7036
+    },
+    {
+        "step": 2,
+        "LE_instances": 6,
+        "LE_relative": 0.09999999999999999,
+        "accuracy": 0.816667,
+        "train_time": 43.534,
+        "eval_time": 81.233
+    },
+    {
+        "step": 3,
+        "LE_instances": 12,
+        "LE_relative": 0.19999999999999998,
+        "accuracy": 0.8,
+        "train_time": 43.2697,
+        "eval_time": 76.4798
+    },
+    {
+        "step": 4,
+        "LE_instances": 18,
+        "LE_relative": 0.3,
+        "accuracy": 0.65,
+        "train_time": 43.2633,
+        "eval_time": 81.2384
+    },
+    {
+        "step": 5,
+        "LE_instances": 24,
+        "LE_relative": 0.39999999999999997,
+        "accuracy": 0.666667,
+        "train_time": 43.471,
+        "eval_time": 76.6311
+    },
+    {
+        "step": 6,
+        "LE_instances": 30,
+        "LE_relative": 0.49999999999999994,
+        "accuracy": 0.6,
+        "train_time": 43.4345,
+        "eval_time": 81.7125
+    },
+    {
+        "step": 7,
+        "LE_instances": 36,
+        "LE_relative": 0.6000000000000002,
+        "accuracy": 0.516667,
+        "train_time": 42.8952,
+        "eval_time": 76.4648
+    },
+    {
+        "step": 8,
+        "LE_instances": 42,
+        "LE_relative": 0.7000000000000005,
+        "accuracy": 0.383333,
+        "train_time": 43.7966,
+        "eval_time": 81.6002
+    },
+    {
+        "step": 9,
+        "LE_instances": 48,
+        "LE_relative": 0.8000000000000008,
+        "accuracy": 0.3,
+        "train_time": 43.0291,
+        "eval_time": 76.2587
+    },
+    {
+        "step": 10,
+        "LE_instances": 54,
+        "LE_relative": 0.9000000000000011,
+        "accuracy": 0.216667,
+        "train_time": 43.7367,
+        "eval_time": 81.7689
+    },
+    {
+        "step": 11,
+        "LE_instances": 60,
+        "LE_relative": 1.0000000000000013,
+        "accuracy": 0.083333,
+        "train_time": 43.5643,
+        "eval_time": 76.4438
+    }
+]
