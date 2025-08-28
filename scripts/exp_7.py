@@ -5,7 +5,7 @@ from src.current_experiment import Experiment
 print(__name__)
 
 if __name__ == "__main__":
-    config_path = "experiments/experiment_HC2_31.yaml"
+    config_path = "experiments/experiment_TSF_31.yaml"
     base_path = "112UCRFolds"
 
     os.makedirs(RESULTS_DIR, exist_ok=True)

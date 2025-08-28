@@ -1,0 +1,90 @@
+[
+    {
+        "step": 1,
+        "LE_instances": 0,
+        "LE_relative": 0.0,
+        "accuracy": 0.964286,
+        "train_time": 10.2981,
+        "eval_time": 1.6336
+    },
+    {
+        "step": 2,
+        "LE_instances": 3,
+        "LE_relative": 0.10714285714285714,
+        "accuracy": 0.857143,
+        "train_time": 8.8861,
+        "eval_time": 1.6507
+    },
+    {
+        "step": 3,
+        "LE_instances": 6,
+        "LE_relative": 0.21428571428571425,
+        "accuracy": 0.75,
+        "train_time": 9.0241,
+        "eval_time": 1.7592
+    },
+    {
+        "step": 4,
+        "LE_instances": 9,
+        "LE_relative": 0.32142857142857134,
+        "accuracy": 0.785714,
+        "train_time": 10.1052,
+        "eval_time": 2.1795
+    },
+    {
+        "step": 5,
+        "LE_instances": 12,
+        "LE_relative": 0.42857142857142844,
+        "accuracy": 0.571429,
+        "train_time": 10.8874,
+        "eval_time": 2.1997
+    },
+    {
+        "step": 6,
+        "LE_instances": 15,
+        "LE_relative": 0.5357142857142856,
+        "accuracy": 0.464286,
+        "train_time": 10.457,
+        "eval_time": 2.1948
+    },
+    {
+        "step": 7,
+        "LE_instances": 18,
+        "LE_relative": 0.6428571428571427,
+        "accuracy": 0.428571,
+        "train_time": 10.2378,
+        "eval_time": 2.0007
+    },
+    {
+        "step": 8,
+        "LE_instances": 21,
+        "LE_relative": 0.7499999999999998,
+        "accuracy": 0.214286,
+        "train_time": 10.0826,
+        "eval_time": 2.0812
+    },
+    {
+        "step": 9,
+        "LE_instances": 24,
+        "LE_relative": 0.8571428571428569,
+        "accuracy": 0.071429,
+        "train_time": 9.503,
+        "eval_time": 1.9435
+    },
+    {
+        "step": 10,
+        "LE_instances": 27,
+        "LE_relative": 0.964285714285714,
+        "accuracy": 0.035714,
+        "train_time": 8.8098,
+        "eval_time": 1.6795
+    },
+    {
+        "step": 11,
+        "LE_instances": 28,
+        "LE_relative": 0.9999999999999997,
+        "accuracy": 0.035714,
+        "train_time": 8.7877,
+        "eval_time": 1.7748
+    }
+]
