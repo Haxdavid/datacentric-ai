@@ -5,5 +5,5 @@ EXPERIMENT:
     RANDOM_S : 0
     DCA: 
       - type: "LabelErrors"                                
-        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":10}
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":60,"step":20}
   

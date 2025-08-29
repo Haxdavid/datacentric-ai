@@ -1,0 +1,26 @@
+[
+    {
+        "step": 1,
+        "LE_instances": 0,
+        "LE_relative": 0.0,
+        "accuracy": 0.7,
+        "train_time": 1650.3381,
+        "eval_time": 5.5698
+    },
+    {
+        "step": 2,
+        "LE_instances": 10,
+        "LE_relative": 0.49999999999999994,
+        "accuracy": 0.36,
+        "train_time": 1183.2513,
+        "eval_time": 5.2003
+    },
+    {
+        "step": 3,
+        "LE_instances": 20,
+        "LE_relative": 1.0000000000000002,
+        "accuracy": 0.12,
+        "train_time": 1360.1694,
+        "eval_time": 5.337
+    }
+]
