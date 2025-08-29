@@ -20,7 +20,7 @@ METRIC_FUNCTIONS = {
     "avg_eval_time": average_eval_time,
 }
 
-DATASET_PROPERTIES = ["no_classes", "Type", "Length", "train_size"] #
+DATASET_PROPERTIES = ["no_classes", "Type", "Length", "train_size"] #test_size
 
 
 number_of_class_categories = ["2", "3-5", "6-10", "11+"]
@@ -51,7 +51,8 @@ def get_dataset_properties(dataset_: str,
     Parameters:
     - dataset_ (str): The name of the dataset.
     - ds_source (str): Path to the JSON file containing dataset metadata.
-    - return_fields (Union[str, List[str]]): Field(s) to return. Options: 'no_classes', 'Type', 'Length'.
+    - return_fields (Union[str, List[str]]): Field(s) to return. Options: 'no_classes', 'Type', 'Length'
+        'train_size', 'test_size'.
 
     Returns:
     - Union[Any, tuple]: The requested value(s). Single value if one field is requested, tuple otherwise.
@@ -69,7 +70,8 @@ def get_dataset_properties(dataset_: str,
         "no_classes": "Number_of_classes",
         "Type": "Type",
         "Length": "Length", 
-        "train_size": "Train_size"
+        "train_size": "Train_size",
+        "test_size": "Test_size",
     }
 
     if isinstance(return_fields, str):

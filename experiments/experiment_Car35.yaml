@@ -1,6 +1,6 @@
 EXPERIMENT:  
   - DATASET_NAME : ["Car"]                  
-    CLASSIFIER_NAME : ["1NN-DTW", "GRAIL", "Catch22","TSFresh","FreshPRINCE", "STC", "RDST","RSF","MRSQM", "R-STSF","RISE", "TSF","CIF","STSF","DRCIF","QUANT", "BOSS","CBOSS", "TDE", "WEASEL-D", "ROCKET","MINI-ROCKET","MULTI-ROCKET","Arsenal","Hydra", "MR-Hydra","CNN", "ResNet", "InceptionTime","H-InceptionTime", "LITETime", "HC1", "HC2", "RIST"]                  
+    CLASSIFIER_NAME : ["1NN-DTW", "GRAIL", "Catch22","TSFresh","FreshPRINCE", "STC", "RDST","RSF","MRSQM", "R-STSF","RISE", "TSF","CIF","STSF","DRCIF","QUANT", "BOSS","CBOSS", "TDE","WEASEL", "WEASEL-D", "ROCKET","MINI-ROCKET","MULTI-ROCKET","Arsenal","Hydra", "MR-Hydra","CNN", "ResNet", "InceptionTime","H-InceptionTime", "LITETime", "HC1", "HC2", "RIST"]                  
     REDUCTION_F : [1]                                 
     RANDOM_S : 0
     DCA: 
