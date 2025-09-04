@@ -1,9 +1,0 @@
-EXPERIMENT:  
-  - DATASET_NAME : ["Adiac", "BME", "Car", "Chinatown", "Computers", "Earthquakes", "ECG200","ACSF1", "BeetleFly", "CBF", "Coffee", "DiatomSizeReduction", "BirdChicken", "ArrowHead", "ChlorineConcentration","Beef", "CinCECGTorso", "CricketX", "CricketY", "CricketZ", "DistalPhalanxOutlineAgeGroup", "ECG5000", "ECGFiveDays","ElectricDevices", "EOGHorizontalSignal","EOGVerticalSignal", "EthanolLevel", "FaceAll", "FaceFour", "FacesUCR"]                 
-    CLASSIFIER_NAME : ["R-STSF"]                       
-    REDUCTION_F : [1]                                  
-    RANDOM_S : 0
-    DCA: 
-      - type: "LabelErrors"                                
-        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":2}
-  
