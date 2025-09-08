@@ -265,11 +265,17 @@ def load_trace_m(df_temp):
     y_train_initial=np.array(df_temp["y_train_history"].iloc[0])
     y_train_last=np.array(df_temp["y_train_history"].iloc[-1])
     label_names = np.unique(y_train_initial, return_counts=False) 
-    LE_trace_matrix = np.zeros((label_names.shape[0],label_names.shape[0]))
+
+    label_to_idx = {label: idx for idx, label in enumerate(label_names)}
+    LE_trace_matrix = np.zeros((len(label_names), len(label_names)), dtype=int)
+
     check_dif_ = y_train_initial != y_train_last
     dif_idx = np.where(check_dif_)[0]
+
     for idx in dif_idx:
-        LE_trace_matrix[int(y_train_initial[idx])-1, int(y_train_last[idx])-1] +=1
+        i = label_to_idx[y_train_initial[idx]]
+        j = label_to_idx[y_train_last[idx]]
+        LE_trace_matrix[i,j] += 1
 
     return LE_trace_matrix
 
