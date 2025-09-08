@@ -1,0 +1,410 @@
+[
+    {
+        "step": 1,
+        "LE_instances": 0,
+        "LE_relative": 0.0,
+        "accuracy": 0.958678,
+        "train_time": 2.236,
+        "eval_time": 3.7573
+    },
+    {
+        "step": 2,
+        "LE_instances": 4,
+        "LE_relative": 0.02,
+        "accuracy": 0.958678,
+        "train_time": 2.2664,
+        "eval_time": 3.7684
+    },
+    {
+        "step": 3,
+        "LE_instances": 8,
+        "LE_relative": 0.04,
+        "accuracy": 0.946281,
+        "train_time": 2.2628,
+        "eval_time": 3.7967
+    },
+    {
+        "step": 4,
+        "LE_instances": 12,
+        "LE_relative": 0.05999999999999999,
+        "accuracy": 0.950413,
+        "train_time": 2.2714,
+        "eval_time": 3.769
+    },
+    {
+        "step": 5,
+        "LE_instances": 16,
+        "LE_relative": 0.08,
+        "accuracy": 0.942149,
+        "train_time": 2.2577,
+        "eval_time": 3.8031
+    },
+    {
+        "step": 6,
+        "LE_instances": 20,
+        "LE_relative": 0.10000000000000002,
+        "accuracy": 0.946281,
+        "train_time": 2.2605,
+        "eval_time": 3.7461
+    },
+    {
+        "step": 7,
+        "LE_instances": 24,
+        "LE_relative": 0.12000000000000004,
+        "accuracy": 0.92562,
+        "train_time": 2.2328,
+        "eval_time": 3.7531
+    },
+    {
+        "step": 8,
+        "LE_instances": 28,
+        "LE_relative": 0.14000000000000004,
+        "accuracy": 0.92562,
+        "train_time": 2.2553,
+        "eval_time": 3.7728
+    },
+    {
+        "step": 9,
+        "LE_instances": 32,
+        "LE_relative": 0.16000000000000006,
+        "accuracy": 0.921488,
+        "train_time": 2.2536,
+        "eval_time": 3.7807
+    },
+    {
+        "step": 10,
+        "LE_instances": 36,
+        "LE_relative": 0.18000000000000008,
+        "accuracy": 0.929752,
+        "train_time": 2.2503,
+        "eval_time": 3.7228
+    },
+    {
+        "step": 11,
+        "LE_instances": 40,
+        "LE_relative": 0.2000000000000001,
+        "accuracy": 0.92562,
+        "train_time": 2.2869,
+        "eval_time": 3.7203
+    },
+    {
+        "step": 12,
+        "LE_instances": 44,
+        "LE_relative": 0.2200000000000001,
+        "accuracy": 0.92562,
+        "train_time": 2.2707,
+        "eval_time": 3.7763
+    },
+    {
+        "step": 13,
+        "LE_instances": 48,
+        "LE_relative": 0.24000000000000013,
+        "accuracy": 0.909091,
+        "train_time": 2.2671,
+        "eval_time": 3.7273
+    },
+    {
+        "step": 14,
+        "LE_instances": 52,
+        "LE_relative": 0.2600000000000001,
+        "accuracy": 0.896694,
+        "train_time": 2.249,
+        "eval_time": 3.7501
+    },
+    {
+        "step": 15,
+        "LE_instances": 56,
+        "LE_relative": 0.28000000000000014,
+        "accuracy": 0.88843,
+        "train_time": 2.2883,
+        "eval_time": 3.7535
+    },
+    {
+        "step": 16,
+        "LE_instances": 60,
+        "LE_relative": 0.30000000000000016,
+        "accuracy": 0.880165,
+        "train_time": 2.2443,
+        "eval_time": 3.7931
+    },
+    {
+        "step": 17,
+        "LE_instances": 64,
+        "LE_relative": 0.3200000000000002,
+        "accuracy": 0.884298,
+        "train_time": 2.2677,
+        "eval_time": 3.7543
+    },
+    {
+        "step": 18,
+        "LE_instances": 68,
+        "LE_relative": 0.3400000000000002,
+        "accuracy": 0.867769,
+        "train_time": 2.2622,
+        "eval_time": 3.7977
+    },
+    {
+        "step": 19,
+        "LE_instances": 72,
+        "LE_relative": 0.3600000000000002,
+        "accuracy": 0.842975,
+        "train_time": 2.2648,
+        "eval_time": 3.8032
+    },
+    {
+        "step": 20,
+        "LE_instances": 76,
+        "LE_relative": 0.3800000000000002,
+        "accuracy": 0.842975,
+        "train_time": 2.2798,
+        "eval_time": 3.784
+    },
+    {
+        "step": 21,
+        "LE_instances": 80,
+        "LE_relative": 0.40000000000000024,
+        "accuracy": 0.834711,
+        "train_time": 2.2781,
+        "eval_time": 3.7828
+    },
+    {
+        "step": 22,
+        "LE_instances": 84,
+        "LE_relative": 0.42000000000000026,
+        "accuracy": 0.830579,
+        "train_time": 2.1473,
+        "eval_time": 3.7355
+    },
+    {
+        "step": 23,
+        "LE_instances": 88,
+        "LE_relative": 0.4400000000000003,
+        "accuracy": 0.818182,
+        "train_time": 2.2789,
+        "eval_time": 3.7714
+    },
+    {
+        "step": 24,
+        "LE_instances": 92,
+        "LE_relative": 0.4600000000000003,
+        "accuracy": 0.809917,
+        "train_time": 2.2535,
+        "eval_time": 3.7326
+    },
+    {
+        "step": 25,
+        "LE_instances": 96,
+        "LE_relative": 0.4800000000000003,
+        "accuracy": 0.805785,
+        "train_time": 2.2588,
+        "eval_time": 3.7454
+    },
+    {
+        "step": 26,
+        "LE_instances": 100,
+        "LE_relative": 0.5000000000000003,
+        "accuracy": 0.789256,
+        "train_time": 2.2879,
+        "eval_time": 3.7117
+    },
+    {
+        "step": 27,
+        "LE_instances": 104,
+        "LE_relative": 0.5200000000000004,
+        "accuracy": 0.77686,
+        "train_time": 2.1439,
+        "eval_time": 3.7674
+    },
+    {
+        "step": 28,
+        "LE_instances": 108,
+        "LE_relative": 0.5400000000000004,
+        "accuracy": 0.743802,
+        "train_time": 2.2533,
+        "eval_time": 3.7813
+    },
+    {
+        "step": 29,
+        "LE_instances": 112,
+        "LE_relative": 0.5600000000000004,
+        "accuracy": 0.719008,
+        "train_time": 2.2719,
+        "eval_time": 3.7995
+    },
+    {
+        "step": 30,
+        "LE_instances": 116,
+        "LE_relative": 0.5800000000000004,
+        "accuracy": 0.665289,
+        "train_time": 2.2656,
+        "eval_time": 3.7884
+    },
+    {
+        "step": 31,
+        "LE_instances": 120,
+        "LE_relative": 0.6000000000000004,
+        "accuracy": 0.603306,
+        "train_time": 2.2628,
+        "eval_time": 3.821
+    },
+    {
+        "step": 32,
+        "LE_instances": 124,
+        "LE_relative": 0.6200000000000004,
+        "accuracy": 0.545455,
+        "train_time": 2.2443,
+        "eval_time": 3.7758
+    },
+    {
+        "step": 33,
+        "LE_instances": 128,
+        "LE_relative": 0.6400000000000005,
+        "accuracy": 0.524793,
+        "train_time": 2.2267,
+        "eval_time": 3.7216
+    },
+    {
+        "step": 34,
+        "LE_instances": 132,
+        "LE_relative": 0.6600000000000005,
+        "accuracy": 0.487603,
+        "train_time": 2.2544,
+        "eval_time": 3.8117
+    },
+    {
+        "step": 35,
+        "LE_instances": 136,
+        "LE_relative": 0.6800000000000005,
+        "accuracy": 0.446281,
+        "train_time": 2.28,
+        "eval_time": 3.7257
+    },
+    {
+        "step": 36,
+        "LE_instances": 140,
+        "LE_relative": 0.7000000000000005,
+        "accuracy": 0.392562,
+        "train_time": 2.2742,
+        "eval_time": 3.7476
+    },
+    {
+        "step": 37,
+        "LE_instances": 144,
+        "LE_relative": 0.7200000000000005,
+        "accuracy": 0.396694,
+        "train_time": 2.2669,
+        "eval_time": 3.7949
+    },
+    {
+        "step": 38,
+        "LE_instances": 148,
+        "LE_relative": 0.7400000000000005,
+        "accuracy": 0.322314,
+        "train_time": 2.1742,
+        "eval_time": 3.692
+    },
+    {
+        "step": 39,
+        "LE_instances": 152,
+        "LE_relative": 0.7600000000000006,
+        "accuracy": 0.260331,
+        "train_time": 2.2851,
+        "eval_time": 3.7664
+    },
+    {
+        "step": 40,
+        "LE_instances": 156,
+        "LE_relative": 0.7800000000000006,
+        "accuracy": 0.239669,
+        "train_time": 2.2961,
+        "eval_time": 3.7569
+    },
+    {
+        "step": 41,
+        "LE_instances": 160,
+        "LE_relative": 0.8000000000000006,
+        "accuracy": 0.22314,
+        "train_time": 2.2551,
+        "eval_time": 3.743
+    },
+    {
+        "step": 42,
+        "LE_instances": 164,
+        "LE_relative": 0.8200000000000006,
+        "accuracy": 0.214876,
+        "train_time": 2.2818,
+        "eval_time": 3.787
+    },
+    {
+        "step": 43,
+        "LE_instances": 168,
+        "LE_relative": 0.8400000000000006,
+        "accuracy": 0.227273,
+        "train_time": 2.2844,
+        "eval_time": 3.7564
+    },
+    {
+        "step": 44,
+        "LE_instances": 172,
+        "LE_relative": 0.8600000000000007,
+        "accuracy": 0.173554,
+        "train_time": 2.2793,
+        "eval_time": 3.783
+    },
+    {
+        "step": 45,
+        "LE_instances": 176,
+        "LE_relative": 0.8800000000000007,
+        "accuracy": 0.132231,
+        "train_time": 2.1631,
+        "eval_time": 3.7627
+    },
+    {
+        "step": 46,
+        "LE_instances": 180,
+        "LE_relative": 0.9000000000000007,
+        "accuracy": 0.103306,
+        "train_time": 2.1619,
+        "eval_time": 3.7628
+    },
+    {
+        "step": 47,
+        "LE_instances": 184,
+        "LE_relative": 0.9200000000000007,
+        "accuracy": 0.066116,
+        "train_time": 2.2847,
+        "eval_time": 3.7003
+    },
+    {
+        "step": 48,
+        "LE_instances": 188,
+        "LE_relative": 0.9400000000000007,
+        "accuracy": 0.057851,
+        "train_time": 2.2738,
+        "eval_time": 3.8075
+    },
+    {
+        "step": 49,
+        "LE_instances": 192,
+        "LE_relative": 0.9600000000000007,
+        "accuracy": 0.020661,
+        "train_time": 2.2776,
+        "eval_time": 3.8106
+    },
+    {
+        "step": 50,
+        "LE_instances": 196,
+        "LE_relative": 0.9800000000000008,
+        "accuracy": 0.012397,
+        "train_time": 2.296,
+        "eval_time": 3.8117
+    },
+    {
+        "step": 51,
+        "LE_instances": 200,
+        "LE_relative": 1.0000000000000007,
+        "accuracy": 0.012397,
+        "train_time": 2.2773,
+        "eval_time": 3.7531
+    }
+]
