@@ -10,7 +10,8 @@ hv.extension('bokeh')
 #pn.extension('ipywidgets', 'tabulator',"bokeh", sizing_mode='stretch_width') --> for Jupyter Notebook
 
 
-nested_super_df = pd.read_pickle("simulation_results/nested_super_df.pkl")
+#nested_super_df = pd.read_pickle("simulation_results/nested_super_df.pkl")
+nested_super_df = pd.read_pickle("simulation_results/df_nested_interp")
 datasets = nested_super_df['dataset'].unique().tolist()
 classifiers = nested_super_df['classifier'].unique().tolist()
 dataset_colors = dict(zip(datasets, cc.glasbey[:len(datasets)]))  # Or use other palettes
