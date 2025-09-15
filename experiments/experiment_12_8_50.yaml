@@ -1,9 +1,0 @@
-EXPERIMENT:  
-  - DATASET_NAME : ["Haptics", "InlineSkate", "InsectEPGSmallTrain", "Lightning2", "ScreenType", "UMD", "TwoPatterns", "Wine"]
-    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D", "Arsenal", "FreshPRINCE", "MINI-ROCKET", "R-STSF", "RSF", "ROCKET", "TSF", "RDST", "CBOSS"]    #ROCKET #TSF #RDST #CBOSS                  
-    REDUCTION_F : [1]  #|-->8DS                               
-    RANDOM_S : 0
-    DCA: 
-      - type: "LabelErrors"                                
-        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":2}
-    

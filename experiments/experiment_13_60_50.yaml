@@ -1,0 +1,25 @@
+EXPERIMENT:  
+  - DATASET_NAME : ["Adiac", "BME", "Car", "Chinatown", "Computers", "Earthquakes", "ECG200","ACSF1", "BeetleFly", "CBF", "Coffee", "DiatomSizeReduction", "BirdChicken", "ArrowHead", "ChlorineConcentration","Beef", "CinCECGTorso", "CricketX", "CricketY", "CricketZ", "DistalPhalanxOutlineAgeGroup", "ECG5000", "ECGFiveDays","ElectricDevices", "EOGHorizontalSignal","EOGVerticalSignal", "EthanolLevel", "FaceAll", "FaceFour", "FacesUCR"]            
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D", "Arsenal", "FreshPRINCE", "MINI-ROCKET", "R-STSF", "RSF", "ROCKET", "TSF", "RDST", "CBOSS", "Catch22"]    #TSFresh #RISE #WEASEL                
+    REDUCTION_F : [1]  #|-->30DS                               #optional. only for large datasets
+    RANDOM_S : 0
+    DCA: 
+      - type: "LabelErrors"                                #DCA Strategy Category --> Determines DoE_PARAM DICT
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":2}
+
+  - DATASET_NAME : ["Fish", "GunPoint", "GunPointAgeSpan", "GunPointMaleVersusFemale", "Meat", "MedicalImages", "MiddlePhalanxOutlineAgeGroup", "Plane", "PowerCons", "ProximalPhalanxOutlineAgeGroup", "GunPointOldVersusYoung", "Ham", "Herring", "InsectEPGRegularTrain", "ItalyPowerDemand" , "LargeKitchenAppliances", "Lightning7", "OliveOil", "OSULeaf"]   
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D", "Arsenal", "FreshPRINCE", "MINI-ROCKET", "R-STSF", "RSF", "ROCKET", "TSF", "RDST", "CBOSS", "Catch22"]    #ROCKET #TSF #RDST #CBOSS                  
+    REDUCTION_F : [1]    #|-->19DS                            
+    RANDOM_S : 0
+    DCA: 
+      - type: "LabelErrors"                                
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":2}
+
+  - DATASET_NAME : ["ProximalPhalanxTW", "RefrigerationDevices", "Rock", "SemgHandMovementCh2", "SmoothSubspace", "SwedishLeaf", "Symbols", "SyntheticControl", "Trace", "Worms", "WormsTwoClass"]
+    CLASSIFIER_NAME : ["MR-Hydra", "Quant", "Weasel-D", "Arsenal", "FreshPRINCE", "MINI-ROCKET", "R-STSF", "RSF", "ROCKET", "TSF", "RDST", "CBOSS", "Catch22"]    #ROCKET #TSF #RDST #CBOSS                  
+    REDUCTION_F : [1]  #|-->11DS                               
+    RANDOM_S : 0
+    DCA: 
+      - type: "LabelErrors"                                
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":2}
+    
