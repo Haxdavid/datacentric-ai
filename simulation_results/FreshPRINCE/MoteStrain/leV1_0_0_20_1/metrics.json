@@ -1,0 +1,170 @@
+[
+    {
+        "step": 1,
+        "LE_instances": 0,
+        "LE_relative": 0.0,
+        "accuracy": 0.90655,
+        "train_time": 20.1989,
+        "eval_time": 19.3775
+    },
+    {
+        "step": 2,
+        "LE_instances": 1,
+        "LE_relative": 0.05,
+        "accuracy": 0.911342,
+        "train_time": 19.6762,
+        "eval_time": 19.4359
+    },
+    {
+        "step": 3,
+        "LE_instances": 2,
+        "LE_relative": 0.1,
+        "accuracy": 0.876997,
+        "train_time": 19.4785,
+        "eval_time": 19.5026
+    },
+    {
+        "step": 4,
+        "LE_instances": 3,
+        "LE_relative": 0.15000000000000002,
+        "accuracy": 0.809904,
+        "train_time": 19.6542,
+        "eval_time": 19.404
+    },
+    {
+        "step": 5,
+        "LE_instances": 4,
+        "LE_relative": 0.2,
+        "accuracy": 0.698083,
+        "train_time": 19.5029,
+        "eval_time": 19.5259
+    },
+    {
+        "step": 6,
+        "LE_instances": 5,
+        "LE_relative": 0.25,
+        "accuracy": 0.758786,
+        "train_time": 19.6392,
+        "eval_time": 19.5363
+    },
+    {
+        "step": 7,
+        "LE_instances": 6,
+        "LE_relative": 0.3,
+        "accuracy": 0.626997,
+        "train_time": 19.4588,
+        "eval_time": 19.5768
+    },
+    {
+        "step": 8,
+        "LE_instances": 7,
+        "LE_relative": 0.35,
+        "accuracy": 0.611022,
+        "train_time": 18.7488,
+        "eval_time": 19.6166
+    },
+    {
+        "step": 9,
+        "LE_instances": 8,
+        "LE_relative": 0.39999999999999997,
+        "accuracy": 0.567093,
+        "train_time": 19.6536,
+        "eval_time": 19.3374
+    },
+    {
+        "step": 10,
+        "LE_instances": 9,
+        "LE_relative": 0.44999999999999996,
+        "accuracy": 0.539936,
+        "train_time": 19.4912,
+        "eval_time": 19.6147
+    },
+    {
+        "step": 11,
+        "LE_instances": 10,
+        "LE_relative": 0.49999999999999994,
+        "accuracy": 0.441693,
+        "train_time": 19.6204,
+        "eval_time": 19.5646
+    },
+    {
+        "step": 12,
+        "LE_instances": 11,
+        "LE_relative": 0.5499999999999999,
+        "accuracy": 0.409744,
+        "train_time": 19.4972,
+        "eval_time": 19.4429
+    },
+    {
+        "step": 13,
+        "LE_instances": 12,
+        "LE_relative": 0.6,
+        "accuracy": 0.373802,
+        "train_time": 19.7364,
+        "eval_time": 19.6131
+    },
+    {
+        "step": 14,
+        "LE_instances": 13,
+        "LE_relative": 0.65,
+        "accuracy": 0.404952,
+        "train_time": 19.5342,
+        "eval_time": 19.7361
+    },
+    {
+        "step": 15,
+        "LE_instances": 14,
+        "LE_relative": 0.7000000000000001,
+        "accuracy": 0.333866,
+        "train_time": 19.5482,
+        "eval_time": 19.7276
+    },
+    {
+        "step": 16,
+        "LE_instances": 15,
+        "LE_relative": 0.7500000000000001,
+        "accuracy": 0.417732,
+        "train_time": 19.661,
+        "eval_time": 19.4298
+    },
+    {
+        "step": 17,
+        "LE_instances": 16,
+        "LE_relative": 0.8000000000000002,
+        "accuracy": 0.388179,
+        "train_time": 19.5011,
+        "eval_time": 19.7501
+    },
+    {
+        "step": 18,
+        "LE_instances": 17,
+        "LE_relative": 0.8500000000000002,
+        "accuracy": 0.244409,
+        "train_time": 19.696,
+        "eval_time": 19.5457
+    },
+    {
+        "step": 19,
+        "LE_instances": 18,
+        "LE_relative": 0.9000000000000002,
+        "accuracy": 0.198882,
+        "train_time": 19.299,
+        "eval_time": 19.6967
+    },
+    {
+        "step": 20,
+        "LE_instances": 19,
+        "LE_relative": 0.9500000000000003,
+        "accuracy": 0.115016,
+        "train_time": 19.6728,
+        "eval_time": 19.2508
+    },
+    {
+        "step": 21,
+        "LE_instances": 20,
+        "LE_relative": 1.0000000000000002,
+        "accuracy": 0.091853,
+        "train_time": 18.2158,
+        "eval_time": 19.5903
+    }
+]
