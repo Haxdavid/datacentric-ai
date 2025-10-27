@@ -5,7 +5,7 @@ EXPERIMENT:
     RANDOM_S : 0
     DCA: 
       - type: "LabelErrors"                                #DCA Strategy Category --> Determines DoE_PARAM DICT
-        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":90,"step":5}
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":5}
 
     
   - DATASET_NAME : ["SwedishLeaf"]                  #should be in DS_list
@@ -14,7 +14,7 @@ EXPERIMENT:
     RANDOM_S : 0
     DCA: 
       - type: "LabelErrors"                                #DCA Strategy Category --> Determines DoE_PARAM DICT
-        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":1,"start":0,"stop":90,"step":5}
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":1,"start":0,"stop":100,"step":5}
 
 
   - DATASET_NAME : ["Adiac", "BME", "Car", "Chinatown", "Computers", "Crop", "Earthquakes", "ECG200"]                  #should be in DS_list
@@ -23,4 +23,4 @@ EXPERIMENT:
     RANDOM_S : 0
     DCA: 
       - type: "LabelErrors"                                #DCA Strategy Category --> Determines DoE_PARAM DICT
-        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":90,"step":5}
+        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":5}

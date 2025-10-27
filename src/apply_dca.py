@@ -179,7 +179,7 @@ def save_history_df(RES_PATH, df):
     np.save(os.path.join(RES_PATH, "y_pred_prob.npy"), df["y_pred_prob"].tolist())
 
     print(f"✅ Results saved in: {RES_PATH}")
-
+#delete historic at the end
 
 def save_history_df_compressed(RES_PATH, df):
     """
@@ -327,7 +327,6 @@ def perform_label_flip(flip_trajectory, le_instance, y_train,  error_rel, error_
     return y_train, error_rel
 
 
-
 def missing_step_calculator(
     train_test_df: pd.DataFrame,
     history_df: pd.DataFrame,
@@ -405,10 +404,12 @@ def missing_step_calculator(
 
 def percentage_to_instance_converter(doe_param, train_test_df):
     """Convert percentage-based DOE parameters to instance-based parameters.
-       This function ensures that the step size is a valid integer and does not exceed the number of instances.
-       It also ensures that the stop value is less than or equal to 99% of the total instances.
+       This function ensures:
+        - the step size is a valid integer and does not exceed the number of instances.
+        - the stop value is less than or equal to 99% of the total instances.
        !IMPORTANT!: The function logic ensures that the requested relative label error is always MET. Which means that
-       the stop value is one step ABOVE the LOWER_THRESHOLD. ONLY IF this exceeds the UPPER_THRESHOLD this Condition is not fulfilled!
+        the stop value is one step ABOVE the LOWER_THRESHOLD. ONLY IF this exceeds the UPPER_THRESHOLD this Condition is not fulfilled!
+
        RETURNS: doe_param with updated 'stop' and 'step' values based on the number of instances.
     """
     UPPER_THRESHOLD = 0.99                        #this value will not be exceeded unless 100% is explicitly requested.
@@ -426,6 +427,21 @@ def percentage_to_instance_converter(doe_param, train_test_df):
     percentage_start = doe_param["start"]
     percentage_stop = doe_param["stop"]
     percentage_step = doe_param["step"]
+
+    # Validate types
+    if not all(isinstance(v, (int, np.integer)) for v in [percentage_start, percentage_stop, percentage_step]):
+        raise TypeError(
+            "DOE percentage parameters ('start', 'stop', 'step') must all be integers. "
+            f"Received types: start={type(percentage_start)}, stop={type(percentage_stop)}, step={type(percentage_step)}"
+        )
+
+    # Validate start value
+    if percentage_start != 0:
+        raise ValueError(
+            "In the current pipeline implementation, 'start' must always be 0. "
+            "Non-zero start values are not supported; existing configuration results will be skipped accordingly."
+        )
+    
     no_perc_steps = int(percentage_stop/percentage_step) #should be integer because 2 --> 29 should be invalid 
     
     requested_instance_step = instances_no * percentage_step/100

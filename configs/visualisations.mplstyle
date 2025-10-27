@@ -1,0 +1,62 @@
+# Use serif fonts
+# font.serif : Times
+font.family : serif
+mathtext.fontset : dejavuserif
+
+# tableau-colorblind10
+axes.prop_cycle : cycler('color', ['006BA4', 'FF800E', 'ABABAB', '595959','5F9ED1', 'C85200', '898989', 'A2C8EC', 'FFBC79', 'CFCFCF'])
+
+
+# --- Axes appearance ---
+axes.labelcolor : .20       # dark grey labels (≈ hsla(0, 0%, 20%, 1.00))
+axes.titlecolor : .20       # dark grey titles (≈ #262626)
+axes.edgecolor  : .7        # light grey border (≈ hsla(0, 0%, 70%, 1.00)) #0.8 
+axes.linewidth  : 1.25      # slightly thicker axis lines
+
+
+# --- Major Ticks ---
+xtick.color : .7             # same light grey as edgecolor
+ytick.color : .7
+xtick.labelcolor : 0.20      # same as edgecolor
+ytick.labelcolor : 0.20
+xtick.major.size : 5
+ytick.major.size : 5
+xtick.major.width : 0.8
+ytick.major.width : 0.8
+xtick.direction : inout
+ytick.direction : inout
+xtick.top : False
+ytick.right : False
+
+
+# --- Minor Ticks ---
+xtick.minor.size : 2
+ytick.minor.size : 2
+xtick.minor.width : 0.5
+ytick.minor.width : 0.5
+xtick.minor.visible : True
+ytick.minor.visible : True
+ 
+
+# --- Grid Config ---
+axes.grid : True
+axes.grid.axis : both
+axes.grid.which : major
+axes.axisbelow : True
+grid.color : grey
+grid.linestyle : -
+grid.linewidth : 0.7
+grid.alpha : 0.8
+ 
+
+# Font sizes
+axes.labelsize: 10
+xtick.labelsize: 10
+ytick.labelsize: 10
+legend.fontsize: 10
+font.size: 10
+
+ 
+# Always save as 'tight'
+savefig.bbox : tight
+savefig.pad_inches : 0.05

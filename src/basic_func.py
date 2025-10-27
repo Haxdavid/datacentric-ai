@@ -58,7 +58,7 @@ def overview_of_bakeoff_cl(show_all_possible_names=False):
             print(cl_names_)
 
 
-def dataset_provider(name="FaceAll", reduction_factor=20, test_set_ratio="default_benchmark", random_state=42,
+def dataset_provider(name="FaceAll", reduction_factor=1, test_set_ratio="default_benchmark", random_state=42,
                     current_ds=CURRENT_TSC_DATASETS,
                     base_path="/Users/david/Documents/Studium D&E/Applied AI/David_MA/112UCRFolds"
                     ):

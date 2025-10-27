@@ -9,10 +9,13 @@ hv.extension('bokeh')
 #pn.extension('ipywidgets', 'tabulator',"bokeh", sizing_mode='stretch_width') --> for Jupyter Notebook
 
 nested_df = pd.read_pickle("simulation_results/nested_df_agg.pkl")
-nested_super_df = pd.read_pickle("simulation_results/nested_super_df.pkl")
-nested_super_df_extended_cat = pd.read_pickle("simulation_results/nested_super_df_extended_cat.pkl")
+#nested_super_df = pd.read_pickle("simulation_results/nested_super_df.pkl")
+nested_super_df = pd.read_pickle("simulation_results/df_nested_interp_ext_13_68_50.pkl")
+#nested_super_df_extended_cat = pd.read_pickle("simulation_results/nested_super_df_extended_cat.pkl")
+nested_super_df_extended_cat = pd.read_pickle("simulation_results/df_nested_interp_ext_cat_13_68_50.pkl")
 datasets = nested_df['dataset'].unique().tolist()
-classifiers = nested_df['classifier'].unique().tolist()
+classifiers = nested_super_df['classifier'].unique().tolist()
+
 
 
 # Define consistent colors for datasets
@@ -75,7 +78,7 @@ compare_clf_x = pn.widgets.Select(name="Classifier X", options=classifiers, valu
                                   styles={'font-size': '16pt'})
 compare_clf_y = pn.widgets.Select(name="Classifier Y", options=classifiers, value=classifiers[1], sizing_mode='stretch_width',
                                    styles={'font-size': '16pt'})
-le_slider = pn.widgets.FloatSlider(name="Label Error (%)", start=0.0, end=0.9, step=0.02, value=0.0, sizing_mode='stretch_width',
+le_slider = pn.widgets.FloatSlider(name="Label Error (%)", start=0.0, end=1.0, step=0.02, value=0.0, sizing_mode='stretch_width',
                                     styles={'font-size': '16pt'})
 
 
