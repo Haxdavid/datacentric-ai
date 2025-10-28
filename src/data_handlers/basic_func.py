@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score
 from aeon.datasets.tsc_datasets import univariate, univariate_equal_length
 from tsml_eval.publications.y2023.tsc_bakeoff.set_bakeoff_classifier import bakeoff_classifiers
 
-from src.utils import setup_logger
+from src.utils.utilizations import setup_logger
 logger = setup_logger("Basic_Func_Logger")
 logger.info("Custom-named logger active.")
 
@@ -43,12 +43,14 @@ def check_for_valid_dataset(ds_name_, ds_list):
     else:
         return False
 
+
 def check_for_valid_cl(cl_name_, cl_list):
     if cl_name_ in cl_list:
         return True
     else:
         return False
     
+
 def overview_of_bakeoff_cl(show_all_possible_names=False):
     print(CLASSIFIERS_CATEGORIZED)
     if show_all_possible_names:
@@ -138,7 +140,6 @@ def dataset_overview(train_test_dct, dataset_name="FaceAll", top_gap=0.18):
     return x_ticks, y_ticks
 
 
-def apply_TSC_algos(train_test_dct, classifiers, exclude_classifiers=[" "]):
     """
     RECEIVE: train_test_dct with the intern format (Dict or DataFrame with the columns X_train, X_test, y_train, y_test
             and their reduced identity (X_train_small)), DICT of classifiers. potential of exclude classifiers

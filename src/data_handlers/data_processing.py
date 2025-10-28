@@ -1,16 +1,18 @@
-import os
+import numpy as np
 import pandas as pd
-
+from scipy.interpolate import interp1d
 from typing import List, Callable, Dict, Union, Any, Tuple
 from pandas.api.types import CategoricalDtype
-from src.metrics import original_accuracy, auc_calculator, average_train_time, average_eval_time
-from src.metrics import acc_robustness_calculator, early_degradation_point
-from src.utils import get_frames_and_names
+
+
+from src.utils.metrics import original_accuracy, auc_calculator, average_train_time, average_eval_time
+from src.utils.metrics import acc_robustness_calculator, early_degradation_point
+from src.utils.utilizations import get_frames_and_names
 from src.current_experiment import Experiment
 
 
-
-
+###----------------------------------METRIC FUNC--------------------------------------###
+### Metric_Mapper also in metrics.py
 METRIC_FUNCTIONS = {
     "initial_accuracy": original_accuracy,
     "auc_score": auc_calculator,
@@ -22,23 +24,13 @@ METRIC_FUNCTIONS = {
 
 DATASET_PROPERTIES = ["no_classes", "Type", "Length", "train_size"] #test_size
 
-
+###----------------------------------CATEGORIZER--------------------------------------###
+### Maps numerical values into binned Category Spans
 number_of_class_categories = ["2", "3-5", "6-10", "11+"]
 length_categories = ["1-199", "200-499", "500-999", "1000+"]
 train_set_size_categories = ["1-99", "100-299", "300-699", "700+"]
-
-# "training_size" 
 # "rel_training_size" average traininging instances per class (220 instances for 4 classes = 55 instances per class) 
-#  "class_imbalance" 0.25, 0.5, 0.75, 1.0 (equal class distribution)
-#  "no_classes_cat" 
-
-
-
-
-
-import numpy as np
-import pandas as pd
-from scipy.interpolate import interp1d
+#  "class_imbalance" 0.25, 0.5, 0.75, 1.0 (equal class distribution) 
 
 
 def get_dataset_properties(dataset_: str,
@@ -183,7 +175,6 @@ def unpack_and_interpolate(nested_df, x_common=np.linspace(0, 0.9, 46)):
 
     # Create final flat DataFrame
     return pd.DataFrame(rows)
-
 
 
 def generate_master_df(exp_dict: Dict[str, Tuple[dict, Experiment]],

@@ -35,9 +35,15 @@ test_cpu.sh
 /*.xlsx
 
 # Ignore all visualization heavy notebooks
-visualize_results.ipynb
-classifier_comparison.ipynb
-apply_dca_temp_playground.ipynb
+notebooks/visualize_results.ipynb
+notebooks/classifier_comparison.ipynb
+notebooks/comparison_reduced.ipynb
+notebooks/data_overview_playground.ipynb
+notebooks/reprod_res.ipynb
+
+# Ignore figures
+figures/*
+
 
 # Ignore keras files
 /*.keras

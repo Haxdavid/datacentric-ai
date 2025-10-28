@@ -2,7 +2,7 @@ from tsml_eval.publications.y2023.tsc_bakeoff.set_bakeoff_classifier import (
     _set_bakeoff_classifier,
 )
 from tsml_eval.utils.experiments import assign_gpu
-from src.utils import logger
+from src.utils.utilizations import logger
 import os
 import multiprocessing
 

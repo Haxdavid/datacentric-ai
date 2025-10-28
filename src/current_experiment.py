@@ -1,18 +1,11 @@
-import os
-import json
 import platform
-import numpy as np
-import pandas as pd
 from typing import Any, Dict
-from datetime import datetime
-from matplotlib import gridspec
-from src.utils import logger
-from tsml_eval.publications.y2023.tsc_bakeoff.run_experiments import _set_bakeoff_classifier
 
-from src.basic_func import dataset_provider,dataset_overview, overview_of_bakeoff_cl
-from src.apply_dca import apply_label_errors
-from src.classifierWrapper import BakeoffClassifier
-from src.visualizations import visualize_acc_decr, visualize_trace_M
+from src.utils.utilizations import logger
+from src.data_handlers.basic_func import dataset_provider,dataset_overview
+from src.dca.apply_dca import apply_label_errors
+from src.models.classifierWrapper import BakeoffClassifier
+from src.visuals.visualizations import visualize_acc_decr, visualize_trace_M
 
 # Check System and Platform for some experiments
 system = platform.system()

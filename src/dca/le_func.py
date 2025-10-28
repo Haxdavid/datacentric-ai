@@ -1,11 +1,118 @@
 import os
-import re
 import numpy as np
 import pandas as pd
-import warnings
 from typing import List, Optional
-from src.utils import setup_logger
+from src.utils.utilizations import setup_logger
 logger = setup_logger("Apply_LE_Logger") # Use module-specific logger
+
+
+
+def init_le_params(le_strategy, p_vector, train_test_df):
+    label_names = np.unique(train_test_df["y_train_small"], return_counts=False)
+    logger.info(f"label_names: {label_names}") 
+    if le_strategy in ["default", "V1", "leV1"]:
+        p_vector_temp = [np.round(1/label_names.size, 4) for label in label_names]
+        p_vector_dict = {label:np.round(1/label_names.size, 4) for label in label_names }
+        logger.info("Current Label Error Strategy: DEFAULT: leV1")
+        logger.info(f"The p_vector for the current_experiment: {p_vector_temp}")
+        return "leV1", p_vector_temp, p_vector_dict
+    elif le_strategy == "V2" or le_strategy =="leV2":
+        if p_vector is None:
+            raise ValueError("p_vector is not provided. If you want to use LE strategy V2 ensure your p_vector is valid")
+        elif len(p_vector) != label_names.size:
+            raise ValueError("p_vector does not match the number of classes for the current dataset choice")
+        p_vector_dict = {label:np.round(p_value, 4) for label, p_value in zip(label_names, p_vector)}
+        logger.info(f"The p_vector for the current_experiment: {p_vector_dict}")
+        return "leV2", p_vector, p_vector_dict
+    
+    else:
+        raise ValueError(f"Unknown le_strategy: {le_strategy}. Please choose a valid strategy ('default', 'V1', 'leV1', 'V2', 'leV2').")
+    #TODO ADD SAFETY MECHANISM IF one p_i of one or more classes == 0 --> remaining_classes are not selectable
+
+
+def percentage_to_instance_converter(doe_param, train_test_df):
+    """Convert percentage-based DOE parameters to instance-based parameters.
+       This function ensures:
+        - the step size is a valid integer and does not exceed the number of instances.
+        - the stop value is less than or equal to 99% of the total instances.
+       !IMPORTANT!: The function logic ensures that the requested relative label error is always MET. Which means that
+        the stop value is one step ABOVE the LOWER_THRESHOLD. ONLY IF this exceeds the UPPER_THRESHOLD this Condition is not fulfilled!
+
+       RETURNS: doe_param with updated 'stop' and 'step' values based on the number of instances.
+    """
+    UPPER_THRESHOLD = 0.99                        #this value will not be exceeded unless 100% is explicitly requested.
+    LOWER_THRESHOLD = doe_param["stop"] * 1/100  #This value will be exceeded if not exactly met.
+    # READ IMPORTANT NOTE ABOVE concerning the handling of different inputs & when changing THRESHOLDS
+
+
+    doe_param = doe_param.copy()
+    try:
+        instances_no = train_test_df["y_train_small"].shape[0]
+    except:
+        instances_no = len(train_test_df["y_train_small"])
+
+    # for start=0
+    percentage_start = doe_param["start"]
+    percentage_stop = doe_param["stop"]
+    percentage_step = doe_param["step"]
+
+    # Validate types
+    if not all(isinstance(v, (int, np.integer)) for v in [percentage_start, percentage_stop, percentage_step]):
+        raise TypeError(
+            "DOE percentage parameters ('start', 'stop', 'step') must all be integers. "
+            f"Received types: start={type(percentage_start)}, stop={type(percentage_stop)}, step={type(percentage_step)}"
+        )
+
+    # Validate start value
+    if percentage_start != 0:
+        raise ValueError(
+            "In the current pipeline implementation, 'start' must always be 0. "
+            "Non-zero start values are not supported; existing configuration results will be skipped accordingly."
+        )
+    
+    no_perc_steps = int(percentage_stop/percentage_step) #should be integer because 2 --> 29 should be invalid 
+    
+    requested_instance_step = instances_no * percentage_step/100
+    instances_step = int(np.round(instances_no * percentage_step/100))
+    transformed_percentage_step = np.round(instances_step/instances_no * 100, 4)
+
+    logger.info("Converting percentage-based DOE parameters to instance-based parameters")
+    logger.info(f"requested_instance_step = {requested_instance_step} will be transformed into {instances_step}")
+    logger.info(f"requested_percentage_step = {percentage_step} % || transformed into {transformed_percentage_step} %")
+    if instances_step == 0:
+        instances_step = 1
+        logger.info("requested instances per step < 0.5 --> rounded up to 1 because its smallest possible increment")
+
+    max_steps = int(instances_no/instances_step)  # example: 390 / 8 = 48.75 --> 48
+
+
+    while no_perc_steps * instances_step > instances_no * LOWER_THRESHOLD:                #Ensure we start below the LOWER_threshold
+        no_perc_steps -= 1
+    while no_perc_steps * instances_step < instances_no * LOWER_THRESHOLD:  #Ensure we increase back up again to reach the first instance above the LOWER_THRESHOLD
+        no_perc_steps += 1
+        logger.info(f"requested_number_of_percentage_steps = {no_perc_steps -1} was increased by one")
+    while max_steps * instances_step > instances_no * UPPER_THRESHOLD:  #Ensure we do not exceed a threshold
+        max_steps -= 1
+
+    # Ensure that the number of percentage steps does not exceed the maximum allowed steps
+    if not no_perc_steps <= max_steps: 
+        no_perc_steps = max_steps
+        logger.info("Converting percentage-based DOE parameters to instance-based parameters")
+        print("Cap reached")
+
+
+    instances_stop = instances_step*no_perc_steps # > lower Threshold but <= upper threshold 
+    #100 PERCCENT CASE 
+    # Pipeline has to handle this CASE appropriately to ensure to NOT exceed the numbers with the given stepsize
+    if percentage_stop == 100:
+        instances_stop = instances_no
+        logger.info("stop value is 100% --> set to number of instances")
+
+    doe_param["stop"]=instances_stop
+    doe_param["step"]=instances_step
+
+    return doe_param
+
 
 def create_label_flip_trajectory(train_array: np.ndarray, 
                             p_vector: List[float], 
@@ -93,9 +200,6 @@ def create_label_flip_trajectory(train_array: np.ndarray,
     return pd.DataFrame(log)
 
 
-
-
-
 def check_for_le_trajectory(le_trajectory_dir: str,
                              leV: str,
                              dataset: str,
@@ -143,7 +247,6 @@ def check_for_le_trajectory(le_trajectory_dir: str,
     return le_trajectory
 
 
-
 def reconstruct_state_y_train(initial_y_train: np.ndarray,
                             flip_trajectory: pd.DataFrame,
                             k: int) -> np.ndarray:
@@ -176,7 +279,6 @@ def reconstruct_state_y_train(initial_y_train: np.ndarray,
     for row in flip_trajectory.iloc[:k].itertuples():
         y[row.where] = row.to
     return y
-
 
 
 def full_flip_handler(step_, error_increasement, error_stop):
