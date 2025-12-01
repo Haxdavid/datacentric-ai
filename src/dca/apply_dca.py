@@ -161,29 +161,6 @@ def check_for_results(target_directory, filename_list , leV, randomS, start, sto
         return {"status":"no_results_present"}  #If any file with DesignOfExperiment Parameters is not already present
 
 
-def init_le_params(le_strategy, p_vector, train_test_df):
-    label_names = np.unique(train_test_df["y_train_small"], return_counts=False)
-    logger.info(f"label_names: {label_names}") 
-    if le_strategy in ["default", "V1", "leV1"]:
-        p_vector_temp = [np.round(1/label_names.size, 4) for label in label_names]
-        p_vector_dict = {label:np.round(1/label_names.size, 4) for label in label_names }
-        logger.info("Current Label Error Strategy: DEFAULT: leV1")
-        logger.info(f"The p_vector for the current_experiment: {p_vector_temp}")
-        return "leV1", p_vector_temp, p_vector_dict
-    elif le_strategy == "V2" or le_strategy =="leV2":
-        if p_vector is None:
-            raise ValueError("p_vector is not provided. If you want to use LE strategy V2 ensure your p_vector is valid")
-        elif len(p_vector) != label_names.size:
-            raise ValueError("p_vector does not match the number of classes for the current dataset choice")
-        p_vector_dict = {label:np.round(p_value, 4) for label, p_value in zip(label_names, p_vector)}
-        logger.info(f"The p_vector for the current_experiment: {p_vector_dict}")
-        return "leV2", p_vector, p_vector_dict
-    
-    else:
-        raise ValueError(f"Unknown le_strategy: {le_strategy}. Please choose a valid strategy ('default', 'V1', 'leV1', 'V2', 'leV2').")
-    #TODO ADD SAFETY MECHANISM IF one p_i of one or more classes == 0 --> remaining_classes are not selectable
-
-
 def percentage_to_instance_converter(doe_param, train_test_df):
     """Convert percentage-based DOE parameters to instance-based parameters.
        This function ensures:
@@ -701,6 +678,7 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     history_df = history_df.sort_values(by="LE_instances")#.reset_index(drop=True)
     history_df_to_store = history_df.copy()
     save_history_df_compressed(RES_PATH, df=history_df_to_store)
+    LE_trace_matrix = load_trace_m(df_temp=history_df)
 
     #remove checkpoint results if experiment was finished succesfully
     #if existing_results["status"]=="load_and_continue" and DELETE_CHECKPOINTS:

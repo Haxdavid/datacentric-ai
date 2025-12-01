@@ -8,46 +8,58 @@ import seaborn as sns
 hv.extension('bokeh')
 #pn.extension('ipywidgets', 'tabulator',"bokeh", sizing_mode='stretch_width') --> for Jupyter Notebook
 
-nested_df = pd.read_pickle("simulation_results/nested_df_agg.pkl")
+#nested_df = pd.read_pickle("simulation_results/nested_df_agg.pkl")
+nested_df = pd.read_pickle("simulation_results/df_nested_agg_13_70_50.pkl")
 #nested_super_df = pd.read_pickle("simulation_results/nested_super_df.pkl")
 nested_super_df = pd.read_pickle("simulation_results/df_nested_interp_ext_13_68_50.pkl")
 #nested_super_df_extended_cat = pd.read_pickle("simulation_results/nested_super_df_extended_cat.pkl")
 nested_super_df_extended_cat = pd.read_pickle("simulation_results/df_nested_interp_ext_cat_13_68_50.pkl")
 datasets = nested_df['dataset'].unique().tolist()
-classifiers = nested_super_df['classifier'].unique().tolist()
+classifiers = nested_df['classifier'].unique().tolist()
 
 
+# Define consistent dataset colors
+dataset_colors = dict(zip(datasets, sns.color_palette("tab20", len(datasets)).as_hex()))
 
-# Define consistent colors for datasets
-dataset_colors = dict(zip(datasets, sns.color_palette("tab10", len(datasets)).as_hex()))
-
-# Define consistent line styles for classifiers
-linestyles = ['solid', 'dashed', 'dotted']
-classifier_styles = dict(zip(classifiers, linestyles))
-
+# Define a pool of linestyles (expandable if needed)
+available_linestyles = [
+    'solid', 'dashed', 'dotted', 'dashdot', (0, (3, 1, 1, 1))
+]  # 5 styles — safe since you said max 5 classifiers at once
 
 # Panel widgets
-dataset_select = pn.widgets.MultiChoice(name="Datasets",
-                                        options=datasets,
-                                        value=[datasets[0]],
-                                        sizing_mode='stretch_width',
-                                        styles={'font-size': '20pt'})
-classifier_select = pn.widgets.MultiChoice(name="Classifiers",
-                                            options=classifiers,
-                                            value=[classifiers[0]],
-                                            sizing_mode='stretch_width',
-                                            styles={'font-size': '20pt'})
+dataset_select = pn.widgets.MultiChoice(
+    name="Datasets",
+    options=datasets,
+    value=[datasets[0]],
+    sizing_mode='stretch_width',
+    styles={'font-size': '20pt'}
+)
+
+classifier_select = pn.widgets.MultiChoice(
+    name="Classifiers",
+    options=classifiers,
+    value=[classifiers[0]],
+    sizing_mode='stretch_width',
+    styles={'font-size': '20pt'}
+)
 
 @pn.depends(dataset_select, classifier_select)
 def acc_degr_plot(selected_datasets, selected_classifiers):
     if not selected_datasets or not selected_classifiers:
         return hv.Text(0.1, 0.5, "Select at least one dataset and classifier")
 
+    # Dynamically assign linestyles to selected classifiers
+    num_selected = len(selected_classifiers)
+    linestyles = available_linestyles[:num_selected]
+    classifier_styles = dict(zip(selected_classifiers, linestyles))
+
     overlays = []
     for ds in selected_datasets:
         for clf in selected_classifiers:
-            truth_search= (nested_df.loc[:,"dataset"]==ds) & (nested_df.loc[:,"classifier"]==clf)
-            res_df = nested_df.loc[truth_search, "acc_drop_df"].iloc[0] #only one row
+            truth_search = (nested_df["dataset"] == ds) & (nested_df["classifier"] == clf)
+            if truth_search.sum() == 0:
+                continue  # skip if no match
+            res_df = nested_df.loc[truth_search, "acc_drop_df"].iloc[0]
             x = res_df["LE_relative"]
             y = res_df["accuracy"]
             label = f'{ds} - {clf}'
@@ -55,8 +67,8 @@ def acc_degr_plot(selected_datasets, selected_classifiers):
                 color=dataset_colors[ds],
                 line_dash=classifier_styles[clf],
                 line_width=2,
-                tools=['hover', "pan"], 
-                active_tools=[], 
+                tools=['hover', "pan"],
+                active_tools=[],
                 muted_alpha=0.1
             )
             overlays.append(curve)
@@ -67,10 +79,7 @@ def acc_degr_plot(selected_datasets, selected_classifiers):
         show_legend=True,
         legend_position='right',
         title="Accuracy Drop vs Label Error",
-        fontscale=1.5
-    )
-
-
+        fontscale=1.5)
 
 
 #### ------------------------------------------------- Second Plot ------------------------------------------------- ####

@@ -40,6 +40,7 @@ notebooks/classifier_comparison.ipynb
 notebooks/comparison_reduced.ipynb
 notebooks/data_overview_playground.ipynb
 notebooks/reprod_res.ipynb
+notebooks/visualize_results_extended.ipynb
 
 # Ignore figures
 figures/*
@@ -48,3 +49,5 @@ figures/*
 # Ignore keras files
 /*.keras
 /*.out
+
+

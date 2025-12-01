@@ -1,8 +1,0 @@
-EXPERIMENT:  
-  - DATASET_NAME : ["Beef"]                  
-    CLASSIFIER_NAME : ["1NN-DTW", "GRAIL", "Catch22", "STC", "RDST","rsf", "R-STSF","RISE", "TSF", "BOSS","CNN", "ROCKET","mini-rocket","Arsenal","InceptionTimeClassifier", "LITETime","ResNet", "HC1"]                  
-    REDUCTION_F : [1]                                 
-    RANDOM_S : 0
-    DCA: 
-      - type: "LabelErrors"                                
-        DoE_param: {"le_strategy": "leV1","p_vec": None, "random_seed":0,"start":0,"stop":100,"step":10}

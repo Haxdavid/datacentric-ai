@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
-from typing import List, Optional
+from typing import List, Optional, Union
 from src.utils.utilizations import setup_logger
 logger = setup_logger("Apply_LE_Logger") # Use module-specific logger
 
@@ -24,10 +24,21 @@ def init_le_params(le_strategy, p_vector, train_test_df):
         p_vector_dict = {label:np.round(p_value, 4) for label, p_value in zip(label_names, p_vector)}
         logger.info(f"The p_vector for the current_experiment: {p_vector_dict}")
         return "leV2", p_vector, p_vector_dict
+    elif le_strategy == "V3" or le_strategy == "leV3":
+        if p_vector is None:
+            raise ValueError("p_vector is not provided. If you want to use LE strategy V3 ensure your p_vector is valid")
+        else:
+            p_vector = np.array(p_vector)
+            logger.info(f"p_vector: {p_vector}")      
+            if p_vector.shape[0] != label_names.size:
+                raise ValueError("p_vector has to be a noise matrix CxC")
+        p_vector_dict = {label:row for label, row in zip (label_names, p_vector)}
+        logger.info(f"The p_vector for the current_experiment is a matrix, with the probs:\n{p_vector_dict}")
+        return "leV3", p_vector, p_vector_dict
+        
     
     else:
-        raise ValueError(f"Unknown le_strategy: {le_strategy}. Please choose a valid strategy ('default', 'V1', 'leV1', 'V2', 'leV2').")
-    #TODO ADD SAFETY MECHANISM IF one p_i of one or more classes == 0 --> remaining_classes are not selectable
+        raise ValueError(f"Unknown le_strategy: {le_strategy}. Please choose a valid strategy ('default', 'V1', 'leV1', 'V2', 'leV2', 'leV3').")
 
 
 def percentage_to_instance_converter(doe_param, train_test_df):
@@ -115,7 +126,7 @@ def percentage_to_instance_converter(doe_param, train_test_df):
 
 
 def create_label_flip_trajectory(train_array: np.ndarray, 
-                            p_vector: List[float], 
+                            p_vector: Union[List[float], np.ndarray], 
                             seed: Optional[int] = None) -> pd.DataFrame:
     """
     Flips labels in the train_set according to a specified probability distribution (p_vector).
@@ -131,20 +142,21 @@ def create_label_flip_trajectory(train_array: np.ndarray,
 
     # --- Input validation --- #
     unique_classes = np.unique(train_array)
+    class_to_idx = {cls: i for i, cls in enumerate(unique_classes)}
     total_instances = len(train_array)
     if not isinstance(train_array, np.ndarray):
         raise TypeError(f"`train_array` must be a numpy array, got {type(train_array).__name__}.")
     if not isinstance(p_vector, list):
-        raise TypeError(f"`p_vector` must be a list of floats, got {type(p_vector).__name__}.")
-    if not all(isinstance(p, float) for p in p_vector):
-        raise TypeError("All elements of `p_vector` must be floats.")
-    if len(unique_classes) != len(p_vector):
-        logger.warning(f"Number of unique classes ({len(unique_classes)}) does not match length of p_vector ({len(p_vector)}).")
+        if not isinstance(p_vector, np.ndarray):
+            raise TypeError(f"`p_vector` must be a list or matrix of floats, got {type(p_vector).__name__}.")
     if seed is not None:
         np.random.seed(seed)
 
- 
-    
+  
+    noise_matrix_mode = False
+    if p_vector.ndim == 2:
+        noise_matrix_mode = True
+
     # Tracking structures
     flipped_indices = set()
     log = []
@@ -156,14 +168,27 @@ def create_label_flip_trajectory(train_array: np.ndarray,
 
 
     #DEBUG
+    if noise_matrix_mode:
+        # Normalize row-wise for safety
+        noise_matrix = p_vector.astype(float)
+        noise_matrix_classes = noise_matrix.sum(axis=1)
+        noise_matrix_class_norm = noise_matrix_classes / noise_matrix_classes.sum()
+        logger.info("Using noise matrix mode: row-normalized matrix activated.")
+        logger.info(f"noise_matrix_class_norm: {noise_matrix_class_norm}")
 
-    p_vector_norm = p_vector / sum(p_vector)
-    logger.info(f"sum of p_vector before normalizing = {sum(p_vector)} // sum after = {sum(p_vector_norm)}")
+    else: 
+        p_vector_norm = np.array(p_vector) / sum(p_vector)
+        logger.info(f"sum of p_vector before normalizing = {sum(p_vector)} "
+                f"// sum after = {sum(p_vector_norm)}")
 
     # Label-Flipping Mechanism
     while len(flipped_indices) < total_instances:
         # --- Choose source class based on p_vector ---
-        source_class = np.random.choice(unique_classes, p=p_vector_norm)
+        if noise_matrix_mode:
+            source_class = np.random.choice(unique_classes, p=noise_matrix_class_norm)
+
+        else:
+            source_class = np.random.choice(unique_classes, p=p_vector_norm)
 
         # --- Skip if no unflipped indices remain ---
         candidate_indices = class_members[source_class] - flipped_indices
@@ -171,8 +196,15 @@ def create_label_flip_trajectory(train_array: np.ndarray,
             continue
 
         # --- Choose target class randomly, different from source ---
-        target_choices = [cls for cls in unique_classes if cls != source_class]
-        target_class = np.random.choice(target_choices)
+        if noise_matrix_mode:
+            src_idx = class_to_idx[source_class]
+            row = noise_matrix[src_idx].copy()
+            class_prob = row / row.sum()
+            target_class = np.random.choice(unique_classes, p= class_prob)
+            
+        else:
+            target_choices = [cls for cls in unique_classes if cls != source_class]
+            target_class = np.random.choice(target_choices)
 
         # --- Pre-check: will current flip make source_class empty? ---
         if len(candidate_indices) == 1 and received_instances[source_class] == 0:
@@ -204,7 +236,7 @@ def check_for_le_trajectory(le_trajectory_dir: str,
                              leV: str,
                              dataset: str,
                              train_arr: np.ndarray,
-                             p_vector: List[float],
+                             p_vector: Union[List[float], np.ndarray],
                              random_seed: int) -> pd.DataFrame:
     """
     Check if a label error trajectory file exists for the given dataset and version.

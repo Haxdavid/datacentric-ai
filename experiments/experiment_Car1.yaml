@@ -1,0 +1,8 @@
+EXPERIMENT:  
+  - DATASET_NAME : ["Car"]                  
+    CLASSIFIER_NAME : ["QUANT"]                  
+    REDUCTION_F : [1]                                 
+    RANDOM_S : 0
+    DCA: 
+      - type: "LabelErrors"                                
+        DoE_param: {"le_strategy": "leV3", "p_vec":[[0, 0.9, 0.1, 0.1], [0.1, 0, 0.1, 0.1], [0.1, 0.9, 0.0, 0.1], [0.033, 0.9, 0.033, 0.0]], "random_seed":0, "start":0, "stop":100, "step":10}
