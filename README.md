@@ -1,5 +1,4 @@
-# Influence of Label Noise on Time Series Classification  
-### A Data-Centric Framework for Large-Scale Evaluation of Performance Degradation under Label Noise
+# A Data-Centric Framework for Large-Scale Evaluation of Performance Degradation under Label Noise in TSC
 
 ## 📌 Project Overview
 This repository accompanies the Master's thesis *“Empirical Evaluation of a Data-Centric Framework for Time Series Classification: Investigating Machine Learning and Deep
@@ -11,7 +10,6 @@ The framework enables a **data-centric perspective** by analyzing:
 - Differences in robustness between algorithmic families  
 - How dataset properties (training size, series length, class count, …) shape degradation  
 
-The framework is extensible and serves as a foundation for future data-centric perturbation studies.
 
 ---
 
@@ -22,6 +20,7 @@ The framework is extensible and serves as a foundation for future data-centric p
 - **Fine-grained performance trajectories** across all noise levels  
 - Support for statistical modelling (e.g., linear mixed-effects models)  
 - Reproducible, modular, and dataset-agnostic experiment design 
+- Serves as a foundation for future data-centric perturbation studies.
 
 ---
 
@@ -53,7 +52,7 @@ pip install -r requirements.txt
 
 
 ## 📂 Code Structure of this Framework
-This Framework is structured as follows:
+The Software Part of this Framework is structured as follows:
 
 ```
 datacentric-ai/
@@ -122,13 +121,10 @@ if __name__ == "__main__":
     logger.info("All experiments completed")
 
 ```
-
-
+---
 ### Experimental Configuration
-
 Experiments are defined via YAML configuration files.  
 A minimal example (`experiment.yaml`) looks as follows:
-
 ```yaml
 EXPERIMENT:
   - DATASET_NAME: ["Fish", "GunPoint", "GunPointAgeSpan", "GunPointMaleVersusFemale"]
@@ -145,12 +141,10 @@ EXPERIMENT:
           stop: 100
           step: 2
 ```
-
 This configuration yields:  
 **4 datasets × 4 classifiers × 1 random seed × 50 noise levels**,  
 using the `"leV1"` label-noise strategy, which generates **uniform synthetic label noise** across the specified range.
 
----
 
 ## Data Post-Processing, Analysis, and Visualization
 
@@ -160,7 +154,7 @@ After running an experiment, results can be explored using the provided notebook
 - **`run_experiment_example2.ipynb`**  
   Demonstrates the full pipeline, including configuration loading, experiment execution, and structured preprocessing.
 
----
+
 
 ## Quick-Start: Running a Single Classifier–Dataset Experiment
 
@@ -226,7 +220,6 @@ df_, trace_M_= apply_label_errors(train_test_df=current_ds,
 ```
 
 ### Optioal: Immediate visualizations:
-Function to load and preprocess TSC datasets.
 ```python
 from src.visuals.visualizations import visualize_acc_decr, visualize_trace_M
 #Observe the accuracy decrease when Label Errors get intruded
@@ -237,7 +230,6 @@ visualize_trace_M(trace_M=trace_M_, cl_="Quant", ds_="ProxiPhTW",dpi=200,
                    filename_="trace_M", save_fig=False, exp_folder=None)
 ```
 
----
 
 ## 📊 Results and Analysis
 The benchmarking framework provides insight into how Data centric adaptations (for now only label noise) impact classification performance and ranking stability. Additionaly it is investigated how dataset properties shape the performance degradation.
