@@ -34,7 +34,7 @@ train_set_size_categories = ["1-99", "100-299", "300-699", "700+"]
 
 
 def get_dataset_properties(dataset_: str,
-                     ds_source: str = "./112UCRFolds/datasetTable.json",
+                     ds_source: str = "./datasets/112UCRFold0/datasetTable.json",
                      return_fields: Union[str, List[str]] = "no_classes"
                     ) -> Union[Any, tuple]:
     """

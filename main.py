@@ -7,7 +7,7 @@ print(__name__)
 if __name__ == "__main__":
     config_path = "experiments/experiment_Rock35.yaml"
     base_path = "datasets/112UCRFold0"
-    result_path = " "
+    results_path = " "
 
     os.makedirs(RESULTS_DIR, exist_ok=True)
     configs = load_and_expand_yaml(config_path)
