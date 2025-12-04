@@ -41,13 +41,21 @@ git clone https://github.com/Haxdavid/datacentric-ai
 cd datacentric-ai
 pip install -r requirements.txt
 ```
+### Setup
+- If you want the use the framework with the default benchmark split of the 112UCRFolds ensure that:
+   datasets are **correctly stored** in the folder datasets/112UCRFold0 with:
+   <name>_TRAIN.ts or <name>_TEST.ts
+- current results for evaluation as well as trajectories are stored in /simulation results. If you want to change the result directory change it src/utils/utilizations system wide or define the res_path in main.py
 
 
 ### 📂 Code Structure FOR Data-Centric-Apporaches
+```
 datacentric-ai/
-├── 112UCRFolds/            # UCR dataset folds (train/test splits)
 ├── benchmark/              # Baseline results and comparison utilities
 ├── configs/                # Experiment configuration files
+├── datasets/               # Dataset folder 
+|   ├── 112UCRFold0/        # UCR dataset default benchmark split (train/test splits)
+|
 ├── experiments/            # Label-noise experiment pipeline
 ├── notebooks/              # Analysis + reproduction notebooks
 ├── scripts/                # Helper scripts
@@ -84,7 +92,7 @@ datacentric-ai/
 ├── requirements.txt
 ├── requirements_server.txt
 └── README.md
-
+```
 
 
 

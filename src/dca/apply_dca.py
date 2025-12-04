@@ -6,13 +6,6 @@ import json
 import logging
 from typing import Dict, List
 
-# from src.basic_func import apply_TSC_algos
-# from src.utils import setup_logger
-# from src.models.classifierWrapper import BakeoffClassifier, assign_GPU
-# from src.le_func import reconstruct_state_y_train, check_for_le_trajectory, full_flip_handler
-# from src.dca.le_func import init_le_params, percentage_to_instance_converter
-
-###new
 
 from src.dca.le_func import reconstruct_state_y_train, check_for_le_trajectory
 from src.dca.le_func import init_le_params, percentage_to_instance_converter
@@ -448,7 +441,7 @@ def missing_step_calculator(
 
 
 ######----------------------------------MAIN FUNCTION--------------------------------------###
-def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_folder=None):
+def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_folder=None, res_path=None):
     """train_test_df should be a pd.DataFrame with the columns X_train, X_test, y_train, y_test
        and their reduced identity (X_train_small). cl_dict should be a dict out of classifier names
        and their respective instances.
@@ -479,6 +472,12 @@ def apply_label_errors(train_test_df, cl_dict, ds_="ds_0", doe_param=None, exp_f
     GPU_USAGE = True
     CHECKPOINT_THRESHOLD = 0.5 #relative stop
     DELETE_CHECKPOINTS = True
+
+    #Possible overwrite Constants
+    if res_path != None:
+        RESULT_DIRECTORY = res_path
+        LE_TRAJECTORY_DIR = os.path.join(RESULT_DIRECTORY, "label_errors")
+    
 
     #DOE_PARAMS
     if doe_param is None:

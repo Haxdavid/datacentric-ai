@@ -13,9 +13,9 @@ nested_df*
 nested_super_df*
 df_*
 
-# Ignore datasets
+# Only include default benchmark split 112UCRFolds
 112UCRFolds/*
-/112UCRFolds/*
+112UCRFolds-c/*
 
 # Ignore contents of simulation_results but keep the folder
 #simulation_results/*

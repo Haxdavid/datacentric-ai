@@ -56,7 +56,8 @@ class Experiment:
             train_test_df=self.dataset, 
             cl_dict=cl_dict, 
             ds_=self.dataset_name, 
-            doe_param=self.doe_params)
+            doe_param=self.doe_params,
+            res_path=self.results_root)
 
     def run_experiment(self):
         logger.info(f"Run Experiment")

@@ -62,17 +62,17 @@ def overview_of_bakeoff_cl(show_all_possible_names=False):
 
 def dataset_provider(name="FaceAll", reduction_factor=1, test_set_ratio="default_benchmark", random_state=42,
                     current_ds=CURRENT_TSC_DATASETS,
-                    base_path="/Users/david/Documents/Studium D&E/Applied AI/David_MA/112UCRFolds"
+                    base_path="datasets/112UCRFold0"
                     ):
     """
-    RECEIVE: dataset name to load the dataset from 112UCRFolds/...
+    RECEIVE: dataset name to load the dataset from datasets/112UCRFold0/...
              reduction factor to randomy reduce the data. min=1 max=?
              test_set_ratio to specify the train test split if default_benchmark split is not wanted.
              random_state only relevant if manual train test split is applied. 
              current_ds: ? 
     RETURN: train_test_dct with 8 columns(keys), meta_ 
     """
-
+    #OLD HARDCODED PATH: /Users/david/Documents/Studium D&E/Applied AI/David_MA/112UCRFolds
     #TODO overwork architecture. add predefined resample. connect with load_from_tsl_file to receive exact <name>0.TRAIN.ts ?
     if name not in current_ds:
         raise ValueError(f"Dataset {name} is not available in the dataset list.")
