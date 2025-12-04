@@ -1,7 +1,105 @@
+# Influence of Label Noise on Time Series Classification  
+### A Data-Centric Framework for Large-Scale Robustness Evaluation
+
+## 📌 Project Overview
+This repository accompanies the Master's thesis *“Empirical Evaluation of a Data-Centric Framework for Time Series Classification”*.  
+It provides a reproducible pipeline for applying **controlled label-noise levels** to benchmark datasets and evaluating how **state-of-the-art Time Series Classification (TSC) algorithms** degrade under noise.
+
+The framework enables a **data-centric perspective** by analyzing:
+- Performance degradation across 50 noise levels (0 → 1)  
+- Differences in robustness between algorithmic families  
+- How dataset properties (training size, series length, class count, …) shape degradation  
+- Full performance trajectories rather than single-point evaluations  
+
+The framework is extensible and serves as a foundation for future data-centric perturbation studies.
+
+---
+
+## 🚀 Features
+- Systematic injection of **label noise** into TSC benchmark datasets  
+- Evaluation of **13+ representative TSC algorithms**  
+- **Robustness evaluation** via normalized area-under-curve  
+- **Fine-grained performance trajectories** across noise levels  
+- Support for statistical modelling (e.g., linear mixed-effects models)  
+- Fully reproducible and dataset-agnostic design  
+
+---
+
+## 🔧 Installation & Setup
+
+### Prerequisites
+- Python 3.11  
+- Key libraries: `numpy`, `pandas`, `matplotlib`, `sklearn`, `tslearn`, `seaborn`, `aeon`, `tensorflow`, `statsmodels`  
+- UCR TSC datasets: https://www.timeseriesclassification.com/dataset.php
+- Classifier implementation and Benchmarking on the base of : Bake Off Redux Paper: https://link.springer.com/article/10.1007/s10618-024-01022-1
+
+
+
+### Installation
+```bash
+git clone https://github.com/Haxdavid/datacentric-ai
+cd datacentric-ai
+pip install -r requirements.txt
+```
+
+
+### 📂 Code Structure FOR Data-Centric-Apporaches
+datacentric-ai/
+├── 112UCRFolds/            # UCR dataset folds (train/test splits)
+├── benchmark/              # Baseline results and comparison utilities
+├── configs/                # Experiment configuration files
+├── experiments/            # Label-noise experiment pipeline
+├── notebooks/              # Analysis + reproduction notebooks
+├── scripts/                # Helper scripts
+├── simulation_results/     # Outputs of large-scale simulations
+│
+├── src/                    # Core source code
+│   ├── data_handlers/      # Data loading & preprocessing
+│   │   ├── basic_func.py
+│   │   └── data_processing.py
+│   │
+│   ├── dca/                # (Legacy) data-centric augmentation modules
+│   │   ├── apply_dca.py
+│   │   └── le_func.py
+│   │
+│   ├── frontends/          # Dashboard frontends
+│   │   ├── dashboard.py
+│   │   └── dashboard2.py
+│   │
+│   ├── models/             # Classifier wrappers + training API
+│   │   ├── classifierWrapper.py
+│   │   └── tsc_algos.py
+│   │
+│   ├── utils/              # Shared utilities + metrics
+│   │   ├── metrics.py
+│   │   └── utilizations.py
+│   │
+│   ├── visuals/            # Visualization utilities
+│   │   └── visualizations.py
+│   │
+│   └── current_experiment.py
+│
+├── .venv/                  # Local virtual environment (ignored)
+├── main.py                 # Legacy entry point
+├── requirements.txt
+├── requirements_server.txt
+└── README.md
+
+
+
+
+
+
+
+
+
+
 # Influence of Data Centric Optimization on Time Series Classification algorithms 
 
 ## 📌 Project Overview
-This repository provides a framework for for applying Time Series Classification (TSC) algorithms on a huge variety of published datasets. The project systematically introduces data-centric-approaches (DCA) such as label errors to evaluate the impact on classification performance and algorithm robustness.
+This repository provides a framework for for applying systematic Label Noise Levels to a given Set of
+Time Series Classification (TSC) algorithms on a huge variety of published datasets. The project enables a data centric perspective ......
+
 
 ## 🚀 Features
 - **Benchmarking multiple TSC algorithms**
